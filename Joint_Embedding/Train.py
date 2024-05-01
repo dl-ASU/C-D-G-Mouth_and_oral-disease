@@ -68,7 +68,7 @@ for epoch in range(args.epochs):
         # Feedforward
         emb_actu = model(train_x)
         emb_pos = model(pos)
-        emb_neg = model(neg.reshape(-1, 3, 299, 299)).reshape(-1, N, 2)
+        emb_neg = model(neg.reshape(-1, 3, 299, 299)).reshape(-1, args.N, 2)
         _std_loss = std_loss(emb_actu, emb_pos)
         _cov_loss = cov_loss(emb_actu, emb_pos)
         loss_contra = contrastive_loss(emb_actu, emb_pos, emb_neg)
