@@ -1,3 +1,5 @@
+import torch.nn as nn
+
 class ModClassifier(nn.Module):
     def __init__(self):
         super(ModClassifier, self).__init__()

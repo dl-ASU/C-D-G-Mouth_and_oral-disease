@@ -1,3 +1,5 @@
+from torch.utils.data import DataLoader, Dataset
+
 def returnDataLabel(root_directory, class_To_idx, size = (299, 299)):
     data = []
     labels = []
