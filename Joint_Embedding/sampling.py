@@ -1,3 +1,5 @@
+import torch
+
 def sample_contrastive_pairs(train_x, train_y, N = 4):
     positive_pairs = []
     negative_pairs = []

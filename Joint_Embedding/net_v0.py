@@ -1,4 +1,6 @@
+import torch
 import torch.nn as nn
+import timm
 
 class ModClassifier(nn.Module):
     def __init__(self):

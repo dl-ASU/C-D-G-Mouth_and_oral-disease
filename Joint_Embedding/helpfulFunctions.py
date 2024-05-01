@@ -1,3 +1,6 @@
+from torchvision.utils import make_grid
+import matplotlib.pyplot as plt
+
 def FreezeFirstN(model, n):
     counter = 0
     for param in model.parameters():

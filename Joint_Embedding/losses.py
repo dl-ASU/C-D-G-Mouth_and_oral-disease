@@ -1,3 +1,6 @@
+import torch
+import torch.nn.functional as F
+
 def contrastive_loss(act, pos, neg):
     sim_pos = torch.exp(torch.sum(act * pos, dim=1, keepdim=True))
     sim_neg = torch.exp(torch.sum(act.unsqueeze(1) * neg, dim=2))
