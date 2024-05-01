@@ -33,3 +33,34 @@ def cov_loss(z_a, z_b):
     cov_z_b = (z_b.T @ z_b) / (N - 1)
     cov_loss = off_diagonal(cov_z_a).pow_(2).sum() / D + off_diagonal(cov_z_b).pow_(2).sum() / D
     return cov_loss
+
+def triplet_loss(anchor, positive, negative, margin=1.0):
+    # Compute the distance between the anchor and positive
+    pos_dist = tf.reduce_sum(tf.square(anchor - positive), axis=-1)
+    # Compute the distance between the anchor and negative
+    neg_dist = tf.reduce_sum(tf.square(anchor - negative), axis=-1)
+    # Compute the triplet loss
+    basic_loss = pos_dist - neg_dist + margin
+    loss = tf.maximum(basic_loss, 0.0)
+    # Return the mean triplet loss over the batch
+    return tf.reduce_mean(loss)
+
+def npair_loss(anchor, positive, negatives, margin=0.1):
+    # Compute pairwise distances
+    pos_dist = tf.reduce_sum(tf.square(anchor - positive), axis=-1)
+    neg_dist = tf.reduce_sum(tf.square(anchor - negatives), axis=-1) 
+    # Calculate the loss
+    loss = tf.reduce_mean(tf.nn.relu(pos_dist - neg_dist + margin))
+    return loss
+def online_contrastive_loss(anchor, positive, margin=1.0, max_negatives=10):
+    # Compute pairwise distances
+    pos_dist = tf.reduce_sum(tf.square(anchor - positive), axis=-1)
+    # Select hard negative examples
+    neg_dist = tf.reduce_sum(tf.square(tf.expand_dims(anchor, axis=1) - tf.expand_dims(anchor, axis=0)), axis=-1)
+    neg_dist = tf.boolean_mask(neg_dist, neg_dist > pos_dist + margin)
+    neg_dist = tf.nn.top_k(neg_dist, k=tf.minimum(max_negatives, tf.shape(neg_dist)[0])).values
+    # Calculate the loss
+    loss = tf.reduce_mean(tf.nn.relu(pos_dist - neg_dist + margin))
+    return loss
+
+
