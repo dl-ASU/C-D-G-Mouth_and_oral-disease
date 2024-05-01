@@ -109,13 +109,13 @@ directory = os.path.join(BASE_DIR, "results")
 os.makedirs(directory, exist_ok=True)
 
 # Save NumPy arrays with specified directory
-np.save(directory + 'train_loss_values.npy', train_loss_values)
-np.save(directory + 'var_loss_values.npy', var_loss_values)
-np.save(directory + 'cov_loss_values.npy', cov_loss_values)
-np.save(directory + 'con_loss_values.npy', con_loss_values)
+np.save(os.path.join(directory, 'train_loss_values.npy'), train_loss_values)
+np.save(os.path.join(directory, 'var_loss_values.npy'), var_loss_values)
+np.save(os.path.join(directory, 'cov_loss_values.npy'), cov_loss_values)
+np.save(os.path.join(directory, 'con_loss_values.npy'), con_loss_values)
 
 # Specify the file name for saving the model
-model_file = directory + 'your_model.pt'
+model_file = os.path.join(directory, 'model.pt')
 
 # Save the model to the specified directory
 torch.save(model.state_dict(), model_file)
