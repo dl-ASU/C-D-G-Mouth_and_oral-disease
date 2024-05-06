@@ -16,12 +16,10 @@ def sample_contrastive_pairs(train_x, train_y, N = 4):
         for j in range(len(train_x)):
             if counter == N:
                 break
-
             if train_y[i] > 0:
                 if 0 == train_y[j]:
                     negative_pair.append(train_x[j])
                     counter = counter + 1
-
             else:
                 if train_y[i] != train_y[j]:
                     negative_pair.append(train_x[j])

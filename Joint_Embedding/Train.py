@@ -14,7 +14,7 @@ BASE_DIR = os.getcwd()
 # Define command-line arguments
 parser = argparse.ArgumentParser(description="Specify the training parameters.")
 parser.add_argument("--path", type=str, default="/kaggle/input/oral-classification-v2/datasetV2", help="Patch size (default: /kaggle/input/oral-classification-v2/datasetV2)")
-parser.add_argument("--batch_size", type=int, default=24, help="Batch size (default: 24)")
+parser.add_argument("--patch_size", type=int, default=24, help="Patch size (default: 24)")
 parser.add_argument("--epochs", type=int, default=15, help="Epochs (default: 15)")
 parser.add_argument("--N", type=int, default=3, help="Negative samples prt instance per patch (default: 3)")
 parser.add_argument("--loss", type=str , default = "constructive loss" , help = "type of the loss (default: constructive loss)")
