@@ -15,8 +15,7 @@ def std_loss(z_a, z_b):
     std_loss = torch.mean(F.relu(1 - std_z_a)) + torch.mean(F.relu(1 - std_z_b))
     return std_loss
 
-
-#function taken from https://github.com/facebookresearch/barlowtwins/tree/a655214c76c97d0150277b85d16e69328ea52fd9
+# function taken from https://github.com/facebookresearch/barlowtwins/tree/a655214c76c97d0150277b85d16e69328ea52fd9
 def off_diagonal(x):
     # return a flattened view of the off-diagonal elements of a square matrix
     n, m = x.shape
@@ -52,6 +51,7 @@ def npair_loss(anchor, positive, negatives, margin=0.1):
     # Calculate the loss
     loss = tf.reduce_mean(tf.nn.relu(pos_dist - neg_dist + margin))
     return loss
+
 def online_contrastive_loss(anchor, positive, margin=1.0, max_negatives=10):
     # Compute pairwise distances
     pos_dist = tf.reduce_sum(tf.square(anchor - positive), axis=-1)
@@ -61,6 +61,4 @@ def online_contrastive_loss(anchor, positive, margin=1.0, max_negatives=10):
     neg_dist = tf.nn.top_k(neg_dist, k=tf.minimum(max_negatives, tf.shape(neg_dist)[0])).values
     # Calculate the loss
     loss = tf.reduce_mean(tf.nn.relu(pos_dist - neg_dist + margin))
-    return loss
-
-
+    return loss 
