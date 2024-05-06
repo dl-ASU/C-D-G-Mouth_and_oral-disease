@@ -46,9 +46,6 @@ train_loss_values = []
 var_loss_values = []
 cov_loss_values = []
 con_loss_values = []
-triplet_loss_values=[]
-npair_loss_values=[]
-online_contrastive_loss_values=[]
 
 for epoch in range(args.epochs):
 
@@ -58,9 +55,6 @@ for epoch in range(args.epochs):
     var_lossv = 0
     con_lossv = 0
     cov_lossv = 0
-    triplet_lossv=0
-    online_contrastive_lossv=0
-    npair_lossv=0
 
     for train_x, train_y in data_loader:
         try:
@@ -76,20 +70,13 @@ for epoch in range(args.epochs):
         emb_pos = model(pos)
         emb_neg = model(neg.reshape(-1, 3, 299, 299)).reshape(-1, args.N, 2)
         _std_loss = std_loss(emb_actu, emb_pos)
-        _triplet_loss = triplet_loss(emb_actu,emb_pos,emb_neg)
         _cov_loss = cov_loss(emb_actu, emb_pos)
         loss_contra = contrastive_loss(emb_actu, emb_pos, emb_neg)
-        _npair_loss = npair_loss(emb_actu, emb_pos, emb_neg)
-        _online_contrastive_loss = online_contrastive_loss(emb_actu, emb_pos)
         loss = (loss_contra + 2*_std_loss + _cov_loss) / 4
         train_loss += loss.item()
         con_lossv += loss_contra.item()
         var_lossv += _std_loss.item()
         cov_lossv += _cov_loss.item()
-        triplet_lossv += _triplet_loss.item()
-        online_contrastive_lossv += _online_contrastive_loss.item()
-        npair_loss += _npair_loss.item()
-        npair_lossv=0
 
         # At start of each Epoch
         optimizer.zero_grad()
@@ -102,18 +89,13 @@ for epoch in range(args.epochs):
     con_lossv /= len(data_loader)
     cov_lossv /= len(data_loader)
     var_lossv /= len(data_loader)
-    triplet_lossv /= len(data_loader)
-    npair_lossv /=len(data_loader)
-    online_contrastive_lossv/= len(data_loader)
     scheduler.step()
 
     train_loss_values.append(train_loss)
     var_loss_values.append(var_lossv)
     cov_loss_values.append(cov_lossv)
     con_loss_values.append(con_lossv)
-    triplet_loss_values.append(triplet_lossv)
-    npair_loss_values.append(npair_lossv)
-    online_contrastive_loss_values.append(online_contrastive_lossv)
+
     print(f"Epoch: {epoch + 1} | training_loss : {train_loss:.4f} | Sim_loss : {loss_contra:.4f} | Var_loss : {_std_loss:.4f} | Cov_loss : {_cov_loss:.4f}")
 
 # Convert lists to NumPy arrays
@@ -121,9 +103,6 @@ train_loss_values = np.array(train_loss_values)
 var_loss_values = np.array(var_loss_values)
 cov_loss_values = np.array(cov_loss_values)
 con_loss_values = np.array(con_loss_values)
-triplet_loss_values=np.array(triplet_loss_values)
-npair_loss_values=np.array(npair_loss_values)
-online_contrastive_loss_values=np.array(online_contrastive_loss_values)
 
 # Create the new folder
 directory = os.path.join(BASE_DIR, "results")
