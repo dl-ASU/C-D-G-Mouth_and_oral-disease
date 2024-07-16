@@ -46,9 +46,9 @@ We are testing the implementation using the FashionMNIST dataset. The FashionMNI
 
 I used fashonMinist dataset for testing and small model for embedding.
 
-- ![Image-01](Joint_Embedding/images/one_epoch_two_classes.png)
-- ![Image-02](Joint_Embedding/images/15_epoch_two_classes.png)
-- ![Image-03](Joint_Embedding/images/30_epoch_10_classes.png)
+- ![Image-01](images/one_epoch_two_classes.png)
+- ![Image-02](images/15_epoch_two_classes.png)
+- ![Image-03](images/30_epoch_10_classes.png)
 
 ### References
 
