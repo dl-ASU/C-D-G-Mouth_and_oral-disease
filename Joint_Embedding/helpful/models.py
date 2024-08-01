@@ -22,8 +22,6 @@ class Classifier(nn.Module):
     def __init__(self):
         super(Classifier, self).__init__()
         self.inc_base = nn.Sequential()
-        # self.le_base = nn.Sequential()
-        # model = torch.hub.load('pytorch/vision:v0.10.0', 'googlenet', pretrained=True)
         inceptionResnetV2 = timm.create_model('inception_resnet_v2', pretrained=True)
         for name, child in list(inceptionResnetV2.named_children())[:-1]:
             self.inc_base.add_module(name, child)
@@ -33,8 +31,6 @@ class Classifier(nn.Module):
 
     def forward(self, img):
         out1 = self.inc_base(img)
-        # out2 = self.le_base(img)
-        # out = torch.cat((out1, out2), dim = 1)
         label = self.aux_layer(out1)
         return label
 
