@@ -6,7 +6,7 @@ def train(train_generator, test_generator, model, optimizer, args):
     print("Training Started ....")
 
     loss_fn = nn.MSELoss()
-
+ 
     do = nn.Dropout(0.15)
 
     for epoch in range(args.epochs):
