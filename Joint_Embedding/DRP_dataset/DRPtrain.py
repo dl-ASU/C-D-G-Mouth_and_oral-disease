@@ -61,10 +61,10 @@ test_data = datasets.FashionMNIST(
     transform=v2.Compose([v2.ToImage(), v2.ToDtype(torch.float32, scale = True)]) # images come as PIL format, we want to turn into Torch tensors
 )
 
-# Filter the datasets to include only the specified classes
-classes = [0, 5]
-train_data = FilteredDataset(train_data, classes)
-test_data = FilteredDataset(test_data, classes)
+# # Filter the datasets to include only the specified classes
+# classes = [0, 5]
+# train_data = FilteredDataset(train_data, classes)
+# test_data = FilteredDataset(test_data, classes)
 
 print("range of values: ", train_data.data[0].min(), train_data.data[0].max())
 
@@ -87,9 +87,9 @@ con_loss_values = []
 outputs = []
 values_loss_contr = []
 values_loss_recon = []
+
 values_loss = []
 values_loss_test = []
-epoch_count = []
 
 print(device)
 print("Training Started ....")
@@ -203,9 +203,9 @@ embeddings = np.concatenate(embeddings, axis=0)
 labels = np.concatenate(labels, axis=0)
 
 labels = {
-    0: "Normal",
-    1: "Low",
-    2: "High",
+    0: "normal",
+    1: "low",
+    2: "high",
 }
 
 # Plotting

@@ -88,26 +88,58 @@ for site in os.listdir(base_path):
                     img_name_clean = img_name.replace(' ', '_')
                     new_img_name = f"{site}_{classs}_{i}"
 
-                    # Append image data and label
-                    data.append(img)
-                    labels.append(classs)
-                    cites.append(site)
+                    # Replace spaces in image name with underscores
+                    img_name_clean = img_name.replace(' ', '_')
+                    new_img_name = f"{classs}_{site}_{i}.jpg"
+                    save_img_path = os.path.join(output_path, classs, site)
+                    
+                    # Create directories if they don't exist
+                    if not os.path.exists(save_img_path):
+                        os.makedirs(save_img_path)
+
+                    # Save the image as JPEG
+                    cv2.imwrite(os.path.join(save_img_path, new_img_name), img)
+
+                    # # Append image data and label
+                    # data.append(img)
+                    # labels.append(classs)
+                    # cites.append(site)
                     i += 1
 
-                    # Save batch if it reaches batch size
-                    if len(data) >= batch_size:
-                        save_batch(data, labels, cites, batch_idx)
-                        batch_idx += 1
-                        data = []
-                        labels = []
-                        cites = []
+                    # # Save batch if it reaches batch size
+                    # if len(data) >= batch_size:
+                    #     save_batch(data, labels, cites, batch_idx)
+                    #     batch_idx += 1
+                    #     data = []
+                    #     labels = []
+                    #     cites = []
                 else:
                     print(f"Failed to read: {img_path}")
 
-# Save remaining images
-if data:
-    save_batch(data, labels, cites, batch_idx)
+# # Save remaining images
+# if data:
+#     save_batch(data, labels, cites, batch_idx)
 
-# Distribution of dimensions
-dimensions = np.array(dimensions)
-np.save(os.path.join(output_path, 'dimentions.npy'), dimensions)
+# # Statistical analysis
+# print("\nNumber of images per extension:")
+# for ext, count in ext_counter.items():
+#     print(f"{ext}: {count}")
+
+# # Distribution of dimensions
+# dimensions = np.array(dimensions)
+# np.save(os.path.join(output_path, 'dimentions.npy'), dimensions)
+
+# unique_dims, counts = np.unique(dimensions, axis=0, return_counts=True)
+
+# print("\nDistribution of image dimensions:")
+# for dim, count in zip(unique_dims, counts):
+#     if count > 1:
+#         print(f"Dimensions: {dim}, Count: {count}")
+
+# # Plot distribution of dimensions
+# plt.figure(figsize=(10, 5))
+# plt.hist(dimensions[:, 0] * dimensions[:, 1], bins=50, color='blue', edgecolor='black')
+# plt.title("Distribution of Image Dimensions (in pixels)")
+# plt.xlabel("Number of Pixels")
+# plt.ylabel("Frequency")
+# plt.show()
