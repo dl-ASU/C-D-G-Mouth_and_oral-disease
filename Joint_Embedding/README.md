@@ -38,18 +38,6 @@ The `cov_loss` function computes the covariance loss to ensure that the covarian
 
 The `sample_contrastive_pairs_SL` function generates positive and negative pairs for contrastive learning.
 
-### Test
-
-We are testing the implementation using the FashionMNIST dataset. The FashionMNIST dataset is a popular benchmarking dataset for machine learning algorithms, consisting of grayscale images of fashion items.
-
-#### Results of this approach on a simple data with a simple model
-
-I used fashonMinist dataset for testing and small model for embedding.
-
-- ![Image-01](images/one_epoch_two_classes.png)
-- ![Image-02](images/15_epoch_two_classes.png)
-- ![Image-03](images/30_epoch_10_classes.png)
-
 ### References
 
 - [VICReg: Variance-Invariance-Covariance Regularization](https://github.com/AnnaManasyan/VICReg)
