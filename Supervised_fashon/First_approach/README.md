@@ -26,9 +26,12 @@ The data flow in the model can be summarized as follows:
 
 ## Results
 - I trained the model from scratch no pretraned models used.
-- After training for 15 epoch we noticed that 10 epochs is more than enough and after that no training.
-- 82885123 parameter in the whole Network.
-- Adam optimizer are used with leaning rate 0.001, batch size = 64, embedding dimentions for the site = 64 (found that 32 is enough)
+- After training for `15` epoch we noticed that `10` epochs is more than enough and after that no training.
+- `83 M` parameter in the whole Network.
+- Adam optimizer are used with `leaning rate 0.001`, `batch size = 64`, `embedding dimentions for the site = 64` (found that 32 is enough)
+- Got on seen data `accuracy` , `precesion` and `recall` > 0.99
+- Got on unseen data `accuracy` , `precesion` and `recall` = 0.95
+
 
 ### Training Dataset
 - ![image_00](images/training_loss.png)
