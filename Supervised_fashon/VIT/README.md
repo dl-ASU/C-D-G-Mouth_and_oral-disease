@@ -1,4 +1,4 @@
-# Model Conditioned by the Site First Approach
+# VIT MODEL Approach
 
 ## Overview
 
