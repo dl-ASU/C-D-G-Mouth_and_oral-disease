@@ -36,5 +36,5 @@ The performance metrics indicate that the model performs well on both seen and u
 
 Result for testing dataset :
 
-- ![image_00](VIT/images/plots.png)
-- ![image_01](VIT/images/tsne_plot.png)
+- ![image_00](/images/plots.png)
+- ![image_01](/images/tsne_plot.png)
