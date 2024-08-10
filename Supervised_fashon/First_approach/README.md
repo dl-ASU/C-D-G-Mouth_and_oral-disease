@@ -27,19 +27,16 @@ The data flow in the model can be summarized as follows:
 ## Results
 - I trained the model from scratch no pretraned models used.
 - After training for `15` epoch we noticed that `10` epochs is more than enough and after that no training.
-- `83 M` parameter in the whole Network.
+- `83 M` -`55 M` for inception base model- parameter in the whole Network.
 - Adam optimizer are used with `leaning rate 0.001`, `batch size = 64`, `embedding dimentions for the site = 64` (found that 32 is enough)
-- Got on seen data `accuracy` , `precesion` and `recall` > 0.99
-- Got on unseen data `accuracy` , `precesion` and `recall` = 0.95
-
-
-### Training Dataset
-- ![image_00](images/training_loss.png)
-- ![image_01](images/training_metrics.png)
-
-### Testing Dataset
-- ![image_02](images/testing_loss.png)
-- ![image_03](images/testing_metrics.png)
+- with Inception base model:
+    - Got on seen data `accuracy` > 0.95, `precesion (average)` > 0.9 and `recall (average)` > 0.9 ![image_00](images/traing_metrics_inception.png)
+    - Got on unseen data `accuracy` > 0.8 , `precesion (average)` > 0.9 and `recall (average)` > 0.9 ![image_01](images/testing_metrics_inception.png)
+- with traditional linear base model:
+    - Got on seen data `accuracy` > 0.99, `precesion (average)` > 0.99 and `recall (average)` > 0.99 ![image_01](images/scra_metrics.png)
+    - Got on unseen data `accuracy` > 0.62, `precesion (average)` > 0.6 and `recall (average)` > 0.56 ![image_01](images/scra_testing_metrics.png)
 
 ## Future work
-try the samething with pretrained models like InceptionResNet or google net or ViT (attention-based models)
+- try the samething with pretrained models like InceptionResNet or google net or ViT (attention-based models) (Done)
+- Joint Embedding methods. (Upworking)
+- Regularization and Architectural methods.
