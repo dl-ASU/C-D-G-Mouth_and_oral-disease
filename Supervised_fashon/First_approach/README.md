@@ -5,6 +5,9 @@
 This repository implements a neural network model that combines image data and site information to perform classification tasks. The model is composed of three main components: the `ImageEncoder`, the `SiteEncoder`, and the `Classifier`. These components work together to process the input data and produce classification outputs.
 
 ## Model Architecture
+### How to condition on the site??
+1. Here is the First one that is implemented here ![Arch0](images/approach1.png)
+2. Not tested yet ![Arch1](images/approach2.png)
 
 ### ImageEncoder
 The `ImageEncoder` processes image data through a series of convolutional and pooling layers, followed by a fully connected layer. This encoder extracts features from the images which are then used for classification.
@@ -37,6 +40,7 @@ The data flow in the model can be summarized as follows:
     - Got on unseen data `accuracy` > 0.62, `precesion (average)` > 0.6 and `recall (average)` > 0.56 ![image_01](images/scra_testing_metrics.png)
 
 ## Future work
-- try the samething with pretrained models like InceptionResNet or google net or ViT (attention-based models) (Done)
+- Try the samething with pretrained models like InceptionResNet or google net or ViT (attention-based models) (Done)
+- Do the same work ubove but with the second approach. (upworking)
 - Joint Embedding methods. (Upworking)
 - Regularization and Architectural methods.
