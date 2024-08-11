@@ -5,7 +5,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 num_classes = 33
 num_epochs = 30
 batch_size = 32
-test_fraction = 0.2
+validation_fraction = 0.2
 
 
 

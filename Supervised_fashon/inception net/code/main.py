@@ -9,18 +9,18 @@ from Util import make_mask
 
 def main():
     model, optimizer, criterion = initialize_model()
-    train_dataloader, test_dataloader = get_loaders()
+    train_dataloader, validation_dataloader = get_loaders()
 
 
-    train_losses, test_losses, test_accuracies, test_precisions, test_recalls = train_model(model, optimizer, criterion, train_dataloader, test_dataloader)
+    train_losses, validation_losses, validation_accuracies, validation_precisions, validation_recalls = train_model(model, optimizer, criterion, train_dataloader, validation_dataloader)
 
-    plot_metrics(train_losses, test_losses, test_accuracies, test_precisions, test_recalls)
+    plot_metrics(train_losses, validation_losses, validation_accuracies, validation_precisions, validation_recalls)
 
 
     model.eval()
     features, labels = [], []
     with torch.no_grad():
-        for images, batch_anatomical_location, batch_targets in test_dataloader:
+        for images, batch_anatomical_location, batch_targets in validation_dataloader:
             images = images.to(device)
 
             mask = make_mask(batch_anatomical_location, num_classes)

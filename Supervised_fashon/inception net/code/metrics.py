@@ -2,30 +2,33 @@
 import matplotlib.pyplot as plt
 from config import PLOTS_SAVE_PATH, TSNE_PLOT_SAVE_PATH, num_epochs
 
-def plot_metrics(train_losses, test_losses, test_accuracies, test_precisions, test_recalls):
+import seaborn as sns
+
+def plot_metrics(train_losses, validation_losses, validation_accuracies, validation_precisions, validation_recalls):
+    sns.set()
     epochs = range(1, num_epochs + 1)
     plt.figure(figsize=(12, 6))
 
     plt.subplot(1, 3, 1)
     plt.plot(epochs, train_losses, 'b-o', label='Train Loss')
-    plt.plot(epochs, test_losses, 'r-o', label='test Loss')
+    plt.plot(epochs, validation_losses, 'r-o', label='validation Loss')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
-    plt.title('Training and test Loss')
+    plt.title('Training and validation Loss')
     plt.legend()
 
     plt.subplot(1, 3, 2)
-    plt.plot(epochs, test_accuracies, 'g-o', label='Accuracy')
+    plt.plot(epochs, validation_accuracies, 'g-o', label='Accuracy')
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy')
-    plt.title('test Accuracy')
+    plt.title('validation Accuracy')
 
     plt.subplot(1, 3, 3)
-    plt.plot(epochs, test_precisions, 'r-o', label='Precision')
-    plt.plot(epochs, test_recalls, 'm-o', label='Recall')
+    plt.plot(epochs, validation_precisions, 'r-o', label='Precision')
+    plt.plot(epochs, validation_recalls, 'm-o', label='Recall')
     plt.xlabel('Epoch')
     plt.ylabel('Score')
-    plt.title('test Precision and Recall')
+    plt.title('validation Precision and Recall')
     plt.legend()
 
     plt.tight_layout()
