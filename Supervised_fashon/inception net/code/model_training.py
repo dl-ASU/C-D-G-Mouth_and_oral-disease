@@ -9,6 +9,7 @@ from config import device, num_classes, num_epochs
 from Model import Model
 from tqdm import tqdm
 from Util import make_mask
+from sklearn.metrics import precision_score, recall_score, accuracy_score
 
 
 
@@ -37,7 +38,6 @@ def initialize_model():
     return model, optimizer, criterion
 
 
-from sklearn.metrics import precision_score, recall_score, accuracy_score
 
 
 def train_model(model, optimizer, criterion, train_dataloader, validation_dataloader):

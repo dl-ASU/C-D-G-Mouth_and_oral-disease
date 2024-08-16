@@ -11,6 +11,7 @@ class Model(nn.Module):
             nn.Flatten(),  # Flatten the output from the feature extractor
             nn.Linear(1792, 1024),  # Adjust the input size accordingly
             nn.ReLU(),  # Add ReLU activation function
+            nn.Dropout(0.25),
             nn.Linear(1024, num_classes)  # Adjust the input size accordingly
         )
 

@@ -2,9 +2,12 @@ import os
 from torch.utils.data import Dataset
 import torch
 from PIL import Image
+from collections import Counter
+import numpy as np
+import random
 
 class CustomImageDataset(Dataset):
-    def __init__(self, root_dir, transform=None):
+    def __init__(self, root_dir, transform=None, oversample=True, shuffle=True):
         self.root_dir = root_dir
         self.transform = transform
         self.image_paths = []
@@ -30,6 +33,47 @@ class CustomImageDataset(Dataset):
                                 self.image_paths.append(img_path)
                                 self.labels.append(self.class_map[class_name])
 
+        if oversample:
+            self._oversample()
+
+        if shuffle:
+            self._shuffle()
+
+    def _shuffle(self):
+        combined = list(zip(self.image_paths, self.labels))
+        random.shuffle(combined)
+        self.image_paths[:], self.labels[:] = zip(*combined)
+
+    def _oversample(self):
+        label_counts = Counter(self.labels)
+        print("Before upsampling: ", Counter(self.labels))
+        max_count = max(label_counts.values())
+
+        new_image_paths, new_labels = [], []
+
+        remainders = {}
+
+        for img_path, label in zip(self.image_paths, self.labels):
+            count = label_counts[label]
+            num_duplicates = max_count // count
+
+            if label not in remainders:
+                remainder = max_count % count
+                remainders[label] = remainder
+
+            new_image_paths.extend([img_path] * num_duplicates)
+            new_labels.extend([label] * num_duplicates)
+
+            if remainders[label] > 0:
+                new_image_paths.extend([img_path])
+                new_labels.extend([label])
+                remainders[label] -= 1
+
+        self.image_paths = new_image_paths
+        self.labels = new_labels
+
+        print("After upsampling: ", Counter(self.labels))
+
     def __len__(self):
         return len(self.image_paths)
 
@@ -48,3 +92,5 @@ class CustomImageDataset(Dataset):
         anatomical_location = self.get_location(label)
 
         return image, anatomical_location, label
+    
+

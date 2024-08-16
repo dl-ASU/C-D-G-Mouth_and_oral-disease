@@ -15,3 +15,5 @@ full_data_dir = '/home/mohammaddallash/Documents/GitHub/C-D-G-Mouth_and_oral-dis
 CATEGORIES = ["high", "low", "normal"]
 PLOTS_SAVE_PATH = '../images/plots.png'
 TSNE_PLOT_SAVE_PATH = '../images/tsne_plot.png'
+
+MATRIX_SAVE_PATH = '../images/matrix_plot.png'

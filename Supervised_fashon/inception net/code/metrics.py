@@ -1,7 +1,7 @@
 # metrics.py
 import matplotlib.pyplot as plt
-from config import PLOTS_SAVE_PATH, TSNE_PLOT_SAVE_PATH, num_epochs
-
+from config import PLOTS_SAVE_PATH, TSNE_PLOT_SAVE_PATH, MATRIX_SAVE_PATH, CATEGORIES,num_epochs
+from sklearn.metrics import confusion_matrix
 import seaborn as sns
 
 def plot_metrics(train_losses, validation_losses, validation_accuracies, validation_precisions, validation_recalls):
@@ -35,14 +35,32 @@ def plot_metrics(train_losses, validation_losses, validation_accuracies, validat
     plt.savefig(PLOTS_SAVE_PATH)
     plt.close()
 
-def plot_tsne(features, labels, dataset_classes):
+def plot_tsne(features, labels):
     from sklearn.manifold import TSNE
     tsne = TSNE(n_components=2, random_state=0)
     tsne_features = tsne.fit_transform(features)
 
     plt.figure(figsize=(10, 8))
     scatter = plt.scatter(tsne_features[:, 0], tsne_features[:, 1], c=labels, cmap='tab10')
-    plt.legend(handles=scatter.legend_elements()[0], labels=dataset_classes)
+    plt.legend(handles=scatter.legend_elements()[0], labels=CATEGORIES)
     plt.title("t-SNE visualization of inception net features")
     plt.savefig(TSNE_PLOT_SAVE_PATH)
+    plt.close()
+
+
+
+def plot_confusion_matrix(y_true, y_pred):
+    # Generate the confusion matrix
+    cm = confusion_matrix(y_true, y_pred)
+    
+    # Plot the confusion matrix using seaborn
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=CATEGORIES, yticklabels=CATEGORIES)
+    
+    plt.xlabel("Predicted Labels")
+    plt.ylabel("True Labels")
+    plt.title("Confusion Matrix")
+    
+    # Save the plot
+    plt.savefig(MATRIX_SAVE_PATH)
     plt.close()
