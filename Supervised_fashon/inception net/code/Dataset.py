@@ -7,7 +7,7 @@ import numpy as np
 import random
 
 class CustomImageDataset(Dataset):
-    def __init__(self, root_dir, transform=None, oversample=True, shuffle=True):
+    def __init__(self, root_dir, transform=None, shuffle=True):
         self.root_dir = root_dir
         self.transform = transform
         self.image_paths = []
@@ -33,11 +33,9 @@ class CustomImageDataset(Dataset):
                                 self.image_paths.append(img_path)
                                 self.labels.append(self.class_map[class_name])
 
-        if oversample:
-            self._oversample()
-
         if shuffle:
             self._shuffle()
+
 
     def _shuffle(self):
         combined = list(zip(self.image_paths, self.labels))
@@ -46,7 +44,6 @@ class CustomImageDataset(Dataset):
 
     def _oversample(self):
         label_counts = Counter(self.labels)
-        print("Before upsampling: ", Counter(self.labels))
         max_count = max(label_counts.values())
 
         new_image_paths, new_labels = [], []
@@ -72,7 +69,6 @@ class CustomImageDataset(Dataset):
         self.image_paths = new_image_paths
         self.labels = new_labels
 
-        print("After upsampling: ", Counter(self.labels))
 
     def __len__(self):
         return len(self.image_paths)
@@ -92,5 +88,3 @@ class CustomImageDataset(Dataset):
         anatomical_location = self.get_location(label)
 
         return image, anatomical_location, label
-    
-

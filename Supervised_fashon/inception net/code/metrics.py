@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 from config import PLOTS_SAVE_PATH, TSNE_PLOT_SAVE_PATH, MATRIX_SAVE_PATH, CATEGORIES,num_epochs
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
+from sklearn.manifold import TSNE
+
 
 def plot_metrics(train_losses, validation_losses, validation_accuracies, validation_precisions, validation_recalls):
     sns.set()
@@ -36,7 +38,6 @@ def plot_metrics(train_losses, validation_losses, validation_accuracies, validat
     plt.close()
 
 def plot_tsne(features, labels):
-    from sklearn.manifold import TSNE
     tsne = TSNE(n_components=2, random_state=0)
     tsne_features = tsne.fit_transform(features)
 

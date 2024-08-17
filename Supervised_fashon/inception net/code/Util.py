@@ -2,6 +2,8 @@ import os
 import torch
 from config import device
 from PIL import Image, UnidentifiedImageError
+import matplotlib.pyplot as plt
+from collections import Counter
 
 
 def make_mask(batch_anatomical_location, num_classes):
@@ -17,6 +19,20 @@ def make_mask(batch_anatomical_location, num_classes):
 
 
   return tensor
+
+
+def plot_distribution(labels, title):
+    counter = Counter(labels)
+    classes = list(counter.keys())
+    counts = list(counter.values())
+
+    plt.figure(figsize=(10, 5))
+    plt.bar(classes, counts, color='skyblue')
+    plt.xlabel('Class')
+    plt.ylabel('Frequency')
+    plt.title(title)
+    plt.xticks(rotation=45)
+    plt.show()
 
 def delete_corrupted_images(data_path):
     for root, dirs, files in os.walk(data_path):
