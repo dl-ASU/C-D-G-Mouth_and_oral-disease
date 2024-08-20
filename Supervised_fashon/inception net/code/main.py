@@ -2,10 +2,11 @@
 import torch
 from model_training import initialize_model, train_model
 from preprocess import get_loaders
-from metrics import plot_metrics, plot_tsne, plot_confusion_matrix
+from metrics import *
 from config import device, num_classes
 import numpy as np
 from Util import make_mask
+
 
 
 def main():
@@ -22,7 +23,7 @@ def main():
 
 
     model.eval()
-    features, y_pred, labels = [], [], []
+    features, y_pred, labels, sites = [], [], [], []
 
     with torch.no_grad():
         for images, batch_anatomical_location, batch_targets in validation_dataloader:
@@ -37,6 +38,8 @@ def main():
             features.append(outputs.cpu().numpy())
             labels.append(batch_targets.numpy())
 
+            sites.extend(batch_anatomical_location)
+
             
             y_pred.append(np.argmax(batch_y_pred.cpu().numpy(), axis=1))
             
@@ -46,6 +49,12 @@ def main():
 
     labels = labels % 3
     y_pred = y_pred % 3
+    
+
+    data_analysis = label_site_all_analysis(labels, y_pred, sites)
+
+    run_error_analysis(data_analysis)
+
 
 
     plot_tsne(features, labels)

@@ -16,7 +16,7 @@ preprocess = transforms.Compose([
 
 def get_loaders():
     # Load the dataset without oversampling
-    dataset = CustomImageDataset(root_dir=full_data_dir, transform=preprocess, oversample=False)
+    dataset = CustomImageDataset(root_dir=full_data_dir, transform=preprocess)
 
     # Plot distribution before oversampling
     plot_distribution(dataset.labels, title="Distribution of All Data Before Splitting")

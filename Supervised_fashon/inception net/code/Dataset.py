@@ -14,12 +14,19 @@ class CustomImageDataset(Dataset):
         self.labels = []
         self.class_map = {}
 
-        # Create a mapping of class names to indices
+
+        anatomical_locations = sorted(os.listdir(root_dir))
+
         current_index = 0
-        for anatomical_location in os.listdir(root_dir):
+        for anatomical_location in anatomical_locations:
+
             location_path = os.path.join(root_dir, anatomical_location)
+
             if os.path.isdir(location_path) and not anatomical_location.startswith('.'):
-                for risk_level in os.listdir(location_path):
+
+                risk_levels =  sorted(os.listdir(location_path))
+                for risk_level in risk_levels:
+
                     risk_path = os.path.join(location_path, risk_level)
                     if os.path.isdir(risk_path) and not risk_level.startswith('.'):
                         class_name = f"{anatomical_location}_{risk_level}"
@@ -33,6 +40,8 @@ class CustomImageDataset(Dataset):
                                 self.image_paths.append(img_path)
                                 self.labels.append(self.class_map[class_name])
 
+        
+        
         if shuffle:
             self._shuffle()
 

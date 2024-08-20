@@ -1,9 +1,19 @@
 # metrics.py
 import matplotlib.pyplot as plt
-from config import PLOTS_SAVE_PATH, TSNE_PLOT_SAVE_PATH, MATRIX_SAVE_PATH, CATEGORIES,num_epochs
+from config import PLOTS_SAVE_PATH, TSNE_PLOT_SAVE_PATH, MATRIX_SAVE_PATH, CATEGORIES,LOCATIONS,num_epochs
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
 from sklearn.manifold import TSNE
+import os
+import sys
+from collections import Counter
+sys.path.append(os.path.abspath(os.path.join('..','..' , 'First_approach')))
+from  ErrorAnalysis_functions.confusionmatrix import *
+from  ErrorAnalysis_functions.accuracy import *
+from  ErrorAnalysis_functions.analysis import *
+from  ErrorAnalysis_functions.PredictionDistributions import *
+
+
 
 
 def plot_metrics(train_losses, validation_losses, validation_accuracies, validation_precisions, validation_recalls):
@@ -65,3 +75,17 @@ def plot_confusion_matrix(y_true, y_pred):
     # Save the plot
     plt.savefig(MATRIX_SAVE_PATH)
     plt.close()
+
+
+
+def label_site_all_analysis(y_true, y_pred, sites):
+    error_pairs = [(true, pred, site) for true, pred, site in zip(y_true, y_pred, sites)]
+    error_analysis = Counter(error_pairs)
+    return error_analysis
+
+def run_error_analysis(data_analysis):
+    confusionAnalysis(data_analysis, CATEGORIES, LOCATIONS)
+    PredictionDistribution(data_analysis, CATEGORIES, LOCATIONS)
+    accuracy(data_analysis, CATEGORIES, LOCATIONS)
+    ConfusionANDerrors(data_analysis, CATEGORIES, LOCATIONS)
+
