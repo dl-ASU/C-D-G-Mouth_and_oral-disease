@@ -15,13 +15,12 @@ from vis_metrics import plots, DoAna
 transformation = transforms.Compose([
     # transforms.Resize((256, 256)),
     transforms.RandomRotation(degrees=15),
-    transforms.CenterCrop(224),
+    # transforms.CenterCrop(224),
     # transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.20, hue=0),
     # transforms.RandomApply([transforms.GaussianBlur(kernel_size=(5, 5), sigma=(0.025, 0.5))], p=0.5),  # Adding noise
     transforms.ToTensor(),
     transforms.Normalize(mean=imagenet_mean, std=imagenet_std)
 ])
-
 
 stra_train_data, stra_test_data, idx_to_class, idx_to_site = get_data()
 
@@ -33,7 +32,7 @@ test_loader = DataLoader(test_set, batch_size=batch_size, shuffle=False, num_wor
 
 torch.cuda.empty_cache()
 
-model = Model(num_classes=num_classes, num_sites=num_sites, base = "google").to(device)
+model = Model(num_classes=num_classes, num_sites=num_sites, base = "inception").to(device)
 # model = nn.DataParallel(model).to(device)
 # optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=l2)
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)

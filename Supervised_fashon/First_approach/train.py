@@ -31,10 +31,10 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
         all_preds = []
         cum_loss = 0
         if (epoch == 0):
-            setTrainable(model, 416)
+            setTrainable(model, 600)
             print_trainable_parameters(model)
         elif (epoch == 9):
-            setTrainable(model, 413)
+            setTrainable(model, 550)
             print_trainable_parameters(model)
         elif (epoch == 14):
             setTrainable(model, 400)
@@ -116,7 +116,7 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
         test_precision.append(Tepoch_precision.tolist())
         test_recall.append(Tepoch_recall.tolist())
         test_loss.append(t_loss)
-        torch.save(model.state_dict(), f'/home/waleed/Documents/Medical/test/outputs/model_version_{epoch + 1}.pth')
+        # torch.save(model.state_dict(), f'/home/waleed/Documents/Medical/model_version_{epoch + 1}.pth')
 
         print(f'Epoch [{epoch + 1}/{num_epochs}], Loss: {cum_loss:.4f}, Accuracy: {epoch_accuracy:.4f}, Precision: {np.mean(epoch_precision):.4f}, Recall: {np.mean(epoch_recall):.4f}')
         print(f'Epoch [{epoch + 1}/{num_epochs}], Loss: {t_loss:.4f}, Accuracy: {Tepoch_accuracy:.4f}, Precision: {np.mean(Tepoch_precision):.4f}, Recall: {np.mean(Tepoch_recall):.4f}')

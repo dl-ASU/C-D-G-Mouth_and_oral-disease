@@ -18,7 +18,7 @@ class CustomDataset(Dataset):
         self.title = title
         # Populate dataset attributes
         self.image_paths, self.labels, self.sites = zip(*all_data)
-        # self._oversample()
+        self._oversample()
 
     def __len__(self):
         return len(self.image_paths)
