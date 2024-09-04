@@ -31,6 +31,7 @@ class CustomDataset(Dataset):
 
         # Load image
         image = Image.open(img_path).convert('RGB')
+
         # Apply transforms
         if self.transform:
             image = self.transform(image)
