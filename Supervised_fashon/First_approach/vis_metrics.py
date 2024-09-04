@@ -161,7 +161,7 @@ def DoAna(model, test_loader, idx_to_class, idx_to_site):
 
             # Get predictions and true labels
             _, preds = torch.max(outputs, 1)
-            preds = torch.div(preds, 11, rounding_mode='floor')
+
             test_labels.extend(labels.cpu().numpy())
             test_preds.extend(preds.cpu().numpy())
             t_sites.extend(sites.cpu().numpy())
