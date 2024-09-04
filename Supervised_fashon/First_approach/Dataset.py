@@ -7,18 +7,19 @@ from collections import Counter
 from sklearn.model_selection import train_test_split
 
 from torch.utils.data import Dataset
-from config import full_data_path, test_size
+from config import full_train_data_path, full_test_data_path, test_size
 import matplotlib.pyplot as plt
 import seaborn as sns
 sns.set()
 
 class CustomDataset(Dataset):
-    def __init__(self, all_data, transform=None, title = "Dist-data"):
+    def __init__(self, all_data, transform=None, title = "Dist-data", oversample = True):
         self.transform = transform
         self.title = title
         # Populate dataset attributes
         self.image_paths, self.labels, self.sites = zip(*all_data)
-        self._oversample()
+        if oversample:
+            self._oversample()
 
     def __len__(self):
         return len(self.image_paths)
@@ -80,7 +81,6 @@ class CustomDataset(Dataset):
         plt.title(f'{self.title} - before oversampling')
         plt.show()
         new_coun = Counter(zip(self.labels, self.sites))
-        print(new_coun.values())
         plt.figure(figsize=(10, 5))
         plt.bar(np.arange(len(label_site_counts.keys())), new_coun.values())
         plt.title(f'{self.title} - after oversampling')
@@ -101,11 +101,11 @@ def get_data():
 
     all_data = []
 
-    for class_idx, class_dir in enumerate(os.listdir(full_data_path)):
+    for class_idx, class_dir in enumerate(os.listdir(full_train_data_path)):
         if class_dir not in idx_to_class:
             idx_to_class.append(class_dir)
 
-        class_path = os.path.join(full_data_path, class_dir)
+        class_path = os.path.join(full_train_data_path, class_dir)
         if os.path.isdir(class_path):
             for site in os.listdir(class_path):
                 site_path = os.path.join(class_path, site)
@@ -114,6 +114,19 @@ def get_data():
                     if site not in site_to_idx:
                         site_to_idx[site] = len(idx_to_site)
                         idx_to_site.append(site)
+                    for img_name in os.listdir(site_path):
+                        img_path = os.path.join(site_path, img_name)
+                        if os.path.isfile(img_path):
+                            all_data.append((img_path, class_idx, site_to_idx[site]))
+
+    for class_idx, class_dir in enumerate(os.listdir(full_test_data_path)):
+
+        class_path = os.path.join(full_test_data_path, class_dir)
+        if os.path.isdir(class_path):
+            for site in os.listdir(class_path):
+                site_path = os.path.join(class_path, site)
+
+                if os.path.isdir(site_path):
                     for img_name in os.listdir(site_path):
                         img_path = os.path.join(site_path, img_name)
                         if os.path.isfile(img_path):

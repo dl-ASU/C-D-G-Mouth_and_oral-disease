@@ -31,26 +31,26 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
         all_preds = []
         cum_loss = 0
         if (epoch == 0):
-            setTrainable(model, 600)
+            setTrainable(model, 692)
             print_trainable_parameters(model)
         elif (epoch == 9):
-            setTrainable(model, 550)
+            setTrainable(model, 675)
             print_trainable_parameters(model)
         elif (epoch == 14):
-            setTrainable(model, 400)
+            setTrainable(model, 248)
             print_trainable_parameters(model)
         elif (epoch == 19):
             setTrainable(model, 0) # 387
             print_trainable_parameters(model)
-        elif (epoch == 29):
-            setTrainable(model, 348)
-            print_trainable_parameters(model)
-        elif (epoch == 39):
-            setTrainable(model, 283)
-            print_trainable_parameters(model)
-        elif (epoch == 44):
-            setTrainable(model, 0)
-            print_trainable_parameters(model)
+        # elif (epoch == 29):
+        #     setTrainable(model, 348)
+        #     print_trainable_parameters(model)
+        # elif (epoch == 39):
+        #     setTrainable(model, 283)
+        #     print_trainable_parameters(model)
+        # elif (epoch == 44):
+        #     setTrainable(model, 0)
+        #     print_trainable_parameters(model)
 
         for images, labels, sites in tqdm(train_loader, desc=f'Epoch {epoch+1}/{num_epochs}'):
             images, labels, sites = images.to(device), labels.to(device), sites.to(device)
