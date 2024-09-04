@@ -24,7 +24,7 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
     print_trainable_parameters(model)
 
     print('Training started.')
-    # Training loop 416, 413, 400, 387, 348, 283
+
     for epoch in range(num_epochs):
         model.train()
         all_labels = []
@@ -40,17 +40,8 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
             setTrainable(model, 248)
             print_trainable_parameters(model)
         elif (epoch == 19):
-            setTrainable(model, 0) # 387
+            setTrainable(model, 0)
             print_trainable_parameters(model)
-        # elif (epoch == 29):
-        #     setTrainable(model, 348)
-        #     print_trainable_parameters(model)
-        # elif (epoch == 39):
-        #     setTrainable(model, 283)
-        #     print_trainable_parameters(model)
-        # elif (epoch == 44):
-        #     setTrainable(model, 0)
-        #     print_trainable_parameters(model)
 
         for images, labels, sites in tqdm(train_loader, desc=f'Epoch {epoch+1}/{num_epochs}'):
             images, labels, sites = images.to(device), labels.to(device), sites.to(device)
@@ -60,7 +51,7 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
 
             # Forward pass
             outputs = model(images, sites)
-            loss = criterion(outputs, labels) # sites + 11 * labels
+            loss = criterion(outputs, labels)
 
             # Backward pass and optimize
             loss.backward()
@@ -70,7 +61,7 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
             _, preds = torch.max(outputs, 1)
 
             all_labels.extend(labels.cpu().numpy())
-            all_preds.extend(preds.cpu().numpy()) # torch.div(preds, 11, rounding_mode='floor')
+            all_preds.extend(preds.cpu().numpy())
             cum_loss += loss.item()
         scheduler.step()
 
@@ -97,13 +88,13 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
 
                 # Forward pass
                 outputs = model(images, sites)
-                t_loss += criterion(outputs, labels).item() # sites + 11 * labels
+                t_loss += criterion(outputs, labels).item()
 
                 # Get predictions and true labels
                 _, preds = torch.max(outputs, 1)
 
                 test_labels.extend(labels.cpu().numpy())
-                test_preds.extend(preds.cpu().numpy())  # torch.div(preds, 11, rounding_mode='floor')
+                test_preds.extend(preds.cpu().numpy())
 
         # Calculate metrics
         Tepoch_accuracy = accuracy_score(test_labels, test_preds)
@@ -116,7 +107,6 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
         test_precision.append(Tepoch_precision.tolist())
         test_recall.append(Tepoch_recall.tolist())
         test_loss.append(t_loss)
-        # torch.save(model.state_dict(), f'/home/waleed/Documents/Medical/model_version_{epoch + 1}.pth')
 
         print(f'Epoch [{epoch + 1}/{num_epochs}], Loss: {cum_loss:.4f}, Accuracy: {epoch_accuracy:.4f}, Precision: {np.mean(epoch_precision):.4f}, Recall: {np.mean(epoch_recall):.4f}')
         print(f'Epoch [{epoch + 1}/{num_epochs}], Loss: {t_loss:.4f}, Accuracy: {Tepoch_accuracy:.4f}, Precision: {np.mean(Tepoch_precision):.4f}, Recall: {np.mean(Tepoch_recall):.4f}')
