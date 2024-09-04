@@ -67,7 +67,6 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
 
             # Get predictions and true labels
             _, preds = torch.max(outputs, 1)
-            print(preds.cpu().numpy(), labels.cpu().numpy())
 
             all_labels.extend(labels.cpu().numpy())
             all_preds.extend(preds.cpu().numpy())
@@ -104,6 +103,8 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
 
                 test_labels.extend(labels.cpu().numpy())
                 test_preds.extend(preds.cpu().numpy())
+    
+        print(test_preds, test_labels)
 
         # Calculate metrics
         Tepoch_accuracy = accuracy_score(test_labels, test_preds)
