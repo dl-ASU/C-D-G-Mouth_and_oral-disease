@@ -5,7 +5,7 @@ embedding_dim = 128
 learning_rate = 0.001
 num_epochs = 30
 l2 = 1e-6
-batch_size = 512
+batch_size = 256
 gamma = 0.75
 
 sche_milestones = [10, 20, 30, 40, 42, 43, 44, 45, 46, 47, 48, 49]
