@@ -30,16 +30,24 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
         all_labels = []
         all_preds = []
         cum_loss = 0
+
+        # set more parameters
         if (epoch == 0):
             setTrainable(model, 692)
             print_trainable_parameters(model)
         elif (epoch == 9):
-            setTrainable(model, 675)
+            setTrainable(model, 687)
             print_trainable_parameters(model)
         elif (epoch == 14):
-            setTrainable(model, 248)
+            setTrainable(model, 675)
             print_trainable_parameters(model)
         elif (epoch == 19):
+            setTrainable(model, 549)
+            print_trainable_parameters(model)
+        elif (epoch == 24):
+            setTrainable(model, 248)
+            print_trainable_parameters(model)
+        elif (epoch == 27):
             setTrainable(model, 0)
             print_trainable_parameters(model)
 
