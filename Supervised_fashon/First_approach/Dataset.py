@@ -28,6 +28,7 @@ class CustomDataset(Dataset):
            'upper_labial_mucosa' : "lower_labial_mucosa",
            'buccal_mucosa_right' : "buccal_mucosa_left",
            'buccal_mucosa_left'  : "buccal_mucosa_right"}
+
         # Populate dataset attributes
         self.image_paths, self.labels, self.sites = zip(*all_data)
         if oversample:
@@ -62,7 +63,7 @@ class CustomDataset(Dataset):
                     newsite = self.dic[self.idx_to_site[site]]
                     site = self.idx_to_site.index(newsite)
 
-                if isinstance(self.transform, CustomRandomHorizontalFlip) and self.transform.vflip:
+                if isinstance(self.transform, CustomRandomVerticalFlip) and self.transform.vflip:
                     newsite = self.dic[self.idx_to_site[site]]
                     site = self.idx_to_site.index(newsite)
 

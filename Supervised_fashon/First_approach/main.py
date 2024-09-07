@@ -4,16 +4,16 @@ import torch.optim as optim
 
 from torch.utils.data import DataLoader
 from torchvision import transforms
+from transformations import CustomRandomHorizontalFlip, CustomRandomVerticalFlip
 
 from Dataset import CustomDataset, load_data
 from SEmodel import Model
 from train import train
 from base_model import device
 from config import imagenet_mean, imagenet_std, batch_size, num_classes, num_epochs, num_sites, learning_rate, sche_milestones, gamma, l2, embedding_dim
-from config import full_train_data_path, full_val_data_path, full_test_data_path, ignore
+from config import full_train_data_path, full_val_data_path, full_test_data_path
 
 from helpful.vis_metrics import plots, DoAna
-from transformations import transform
 
 import argparse
 
@@ -25,6 +25,8 @@ def parse_args():
     parser.add_argument('--num_sites', type=int, default=num_sites, help="Number of sites")
     parser.add_argument('--embedding_dim', type=int, default=embedding_dim, help="Embedding dimension")
     parser.add_argument('--learning_rate', type=float, default=learning_rate, help="Learning rate")
+    parser.add_argument('--shape', type=int, default=299, help="Learning rate")
+
     parser.add_argument('--num_epochs', type=int, default=num_epochs, help="Number of epochs")
     parser.add_argument('--l2', type=float, default=l2, help="L2 regularization")
     parser.add_argument('--batch_size', type=int, default=batch_size, help="Batch size")
@@ -42,6 +44,18 @@ def parse_args():
     return parser.parse_args()
 
 args = parse_args()
+# Define the transformations based on the description provided
+transform = transforms.Compose([
+    transforms.RandomResizedCrop(size=args.shape, scale=(0.8, 1.0)),   # Randomly zoom in/out
+    transforms.RandomRotation(degrees=25),                      # Rotate by 25 degrees
+    CustomRandomHorizontalFlip(p=0.5),                          # Flip horizontally with a 50% chance
+    CustomRandomVerticalFlip(p=0.5),                            # Flip vertically with a 50% chance
+    transforms.RandomAffine(degrees=0, translate=(0.1, 0.1), shear=0.2),  # Width & height shift, and shear
+    transforms.ColorJitter(brightness=(0.5, 1.0)),              # Brightness adjustment (0.5 to 1.0)
+    transforms.ToTensor(),                                      # Convert image to tensor
+    # transforms.RandomApply([transforms.Lambda(lambda x: x + (0.05 * torch.randn_like(x)))], p=0.5), # Channel shift
+    # transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]) # Normalize (optional)
+])
 
 stra_train_data, idx_to_class, idx_to_site = load_data(args.full_train_data_path, args.ignore)
 stra_test_data, _, _ = load_data(args.full_test_data_path, args.ignore)

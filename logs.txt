@@ -1,0 +1,1 @@
+['ventral_of_tongue', 'floor_of_mouth', 'lateral_broder_of_tongue', 'labial_mucosa', 'dorsum_of_tongue', 'palate', 'buccal_mucosa', 'gingiva']

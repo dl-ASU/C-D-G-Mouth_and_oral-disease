@@ -7,7 +7,6 @@ num_epochs = 30
 l2 = 1e-6
 batch_size = 24
 gamma = 0.75
-ignore = False
 
 sche_milestones = [10, 20, 30, 40, 42, 43, 44, 45, 46, 47, 48, 49]
 
