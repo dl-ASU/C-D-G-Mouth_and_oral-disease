@@ -60,6 +60,7 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
             # Forward pass
             outputs = model(images, sites)
             loss = criterion(outputs, labels)
+            print(loss)
 
             # Backward pass and optimize
             loss.backward()

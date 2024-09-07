@@ -57,8 +57,11 @@ class Model(nn.Module):
 
     def forward(self, img, site):
         img_encoded = self.image_encoder(img) # [:, 0, :] # take the fuken called CLS token bull fuken shit
+        print(img_encoded.shape)
+        
         if self.base == "ViT":
             img_encoded = self.max(img_encoded.transpose(1, 2)).squeeze(2)
+            print(img_encoded.shape)
         elif self.base == "google":
             img_encoded = img_encoded["features"]
         site_encoded = self.site_encoder(site)
