@@ -76,16 +76,17 @@ class CustomDataset(Dataset):
         img_to_save = transforms.ToPILImage()(img)
         newPath = os.path.join(self.save_path, label)
         if not os.path.exists(newPath):
-            os.makedirs(newPath)
+            os.makedirs(newPath, exist_ok=True)
         newPath = os.path.join(newPath, site)
         if not os.path.exists(newPath):
-            os.makedirs(newPath)
+            os.makedirs(newPath, exist_ok=True)
 
         # Construct the image save path
         save_img_path = os.path.join(newPath, f"augmented_image_{label}_{site}_{idx}.jpg")
         
         # Save the image
         img_to_save.save(save_img_path)
+
 
     def _oversample(self):
         # Combine labels and sites into a unique key
