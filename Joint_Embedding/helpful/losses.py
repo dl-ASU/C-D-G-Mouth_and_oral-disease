@@ -1,12 +1,16 @@
 import torch
 import torch.nn.functional as F
 
+################################################################ ConLos ################################################################
 def contrastive_loss(act, pos, neg):
+
     sim_pos = torch.exp(torch.sum(act * pos, dim=1, keepdim=True))
     sim_neg = torch.exp(torch.sum(act.unsqueeze(1) * neg, dim=2))
-    loss = -torch.log(sim_pos / (sim_pos + torch.sum(sim_neg, dim=1, keepdim=True)))
+    loss = -torch.log(sim_pos / (sim_pos + torch.mean(sim_neg, dim=1, keepdim=True)))
+    
     return torch.mean(loss.squeeze())
 
+################################################################ VICReg ################################################################
 # The following taken from https://github.com/AnnaManasyan/VICReg
 # variance loss
 def std_loss(z_a, z_b):
@@ -14,7 +18,6 @@ def std_loss(z_a, z_b):
     std_z_b = torch.sqrt(z_b.var(dim=0) + 1e-04)
     std_loss = torch.mean(F.relu(1 - std_z_a)) + torch.mean(F.relu(1 - std_z_b))
     return std_loss
-
 
 #function taken from https://github.com/facebookresearch/barlowtwins/tree/a655214c76c97d0150277b85d16e69328ea52fd9
 def off_diagonal(x):
