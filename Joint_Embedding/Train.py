@@ -2,19 +2,19 @@ import subprocess
 import os
 import shutil
 import argparse
-from helpful.libraries import *
-from helpful.helpfulFunctions import *
-from helpful.dataLoader import *
-from helpful.sampling import *
-from helpful.losses import *
-from helpful.models import *
- 
+from libraries import *
+from helpfulFunctions import *
+from dataLoader import *
+from sampling import *
+from losses import *
+from net_v0 import *
+
 BASE_DIR = os.getcwd()
 
 # Define command-line arguments
 parser = argparse.ArgumentParser(description="Specify the training parameters.")
 parser.add_argument("--path", type=str, default="/kaggle/input/oral-classification-v2/datasetV2", help="Patch size (default: /kaggle/input/oral-classification-v2/datasetV2)")
-parser.add_argument("--batch_size", type=int, default=24, help="Patch size (default: 24)")
+parser.add_argument("--patch_size", type=int, default=24, help="Patch size (default: 24)")
 parser.add_argument("--epochs", type=int, default=15, help="Epochs (default: 15)")
 parser.add_argument("--N", type=int, default=3, help="Negative samples prt instance per patch (default: 3)")
 
@@ -58,7 +58,7 @@ for epoch in range(args.epochs):
 
     for train_x, train_y in data_loader:
         try:
-            pos, neg = sample_contrastive_pairs_SL(train_x, train_y, args.N)
+            pos, neg = sample_contrastive_pairs(train_x, train_y, args.N)
         except:
             print("Skipped")
             continue
