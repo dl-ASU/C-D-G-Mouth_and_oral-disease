@@ -1,8 +1,8 @@
 import numpy as np
 import torch
 
-from Analysis import allinone
-from helpful import label_site_error_analysis, label_site_all_analysis
+from helpful.Analysis import allinone
+from helpful.helpful import label_site_error_analysis, label_site_all_analysis
 from base_model import device
 
 import matplotlib.pyplot as plt

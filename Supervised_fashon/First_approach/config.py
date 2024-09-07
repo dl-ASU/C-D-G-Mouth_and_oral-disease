@@ -16,10 +16,16 @@ our_std = [0.2904, 0.2886, 0.2886]
 imagenet_mean=[0.485, 0.456, 0.406]
 imagenet_std=[0.229, 0.224, 0.225]
 
-test_size = 0.3
+test_size = 0.15
+val_size = 0.15
 
-# full_train_data_path = "/home/waleed/Documents/Medical/data_DRP/preprocessed_images_299"
-# full_test_data_path = "/home/waleed/Documents/Medical/data_DRP/test_preprocessed_images_299"
+full_dataset = "/home/waleed/Documents/Medical/data_DRP/LatestDataset_processed_299"
 
-full_train_data_path = "/kaggle/input/dpr-dataset/preprocessed_images_299/preprocessed_images_299"
-full_test_data_path = "/kaggle/input/dpr-dataset/test_preprocessed_images_299/test_preprocessed_images_299"
+full_train_data_path = "/home/waleed/Documents/Medical/SplittedDataset/train"
+full_val_data_path = "/home/waleed/Documents/Medical/SplittedDataset/validation"
+full_test_data_path = "/home/waleed/Documents/Medical/SplittedDataset/test"
+
+# full_data_path = "/home/waleed/Documents/Medical/data_DRP/Total_preprocessed_images_299"
+# full_train_data_path = "/kaggle/input/dpr-dataset/preprocessed_images_299/preprocessed_images_299"
+# full_test_data_path = "/kaggle/input/dpr-dataset/test_preprocessed_images_299/test_preprocessed_images_299"
+# full_test_data_path = "/kaggle/input/dpr-dataset/test_preprocessed_images_299/test_preprocessed_images_299"
