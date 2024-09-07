@@ -12,14 +12,7 @@ This repository implements a neural network model that combines **image data** a
   - [Classifier](#classifier)
 - [Data Flow](#data-flow)
 - [Repository Structure](#repository-structure)
-- [Installation](#installation)
-- [Usage](#usage)
-  - [Training](#training)
-  - [Testing](#testing)
-  - [Visualizing Metrics](#visualizing-metrics)
 - [Future Work](#future-work)
-- [Contributing](#contributing)
-- [License](#license)
 
 ---
 
