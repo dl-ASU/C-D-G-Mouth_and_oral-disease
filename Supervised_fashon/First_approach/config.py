@@ -5,8 +5,9 @@ embedding_dim = 128
 learning_rate = 0.001
 num_epochs = 30
 l2 = 1e-6
-batch_size = 128
+batch_size = 24
 gamma = 0.75
+ignore = False
 
 sche_milestones = [10, 20, 30, 40, 42, 43, 44, 45, 46, 47, 48, 49]
 
@@ -21,11 +22,6 @@ val_size = 0.15
 
 full_dataset = "/home/waleed/Documents/Medical/data_DRP/LatestDataset_processed_299"
 
-full_train_data_path = "/home/waleed/Documents/Medical/SplittedDataset/train"
-full_val_data_path = "/home/waleed/Documents/Medical/SplittedDataset/validation"
-full_test_data_path = "/home/waleed/Documents/Medical/SplittedDataset/test"
-
-# full_data_path = "/home/waleed/Documents/Medical/data_DRP/Total_preprocessed_images_299"
-# full_train_data_path = "/kaggle/input/dpr-dataset/preprocessed_images_299/preprocessed_images_299"
-# full_test_data_path = "/kaggle/input/dpr-dataset/test_preprocessed_images_299/test_preprocessed_images_299"
-# full_test_data_path = "/kaggle/input/dpr-dataset/test_preprocessed_images_299/test_preprocessed_images_299"
+full_train_data_path = "/home/waleed/Documents/Medical/data_DRP/SplittedDataset/train"
+full_val_data_path = "/home/waleed/Documents/Medical/data_DRP/SplittedDataset/validation"
+full_test_data_path = "/home/waleed/Documents/Medical/data_DRP/SplittedDataset/test"

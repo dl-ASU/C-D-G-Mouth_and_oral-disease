@@ -53,7 +53,7 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
 
         for images, labels, sites in tqdm(train_loader, desc=f'Epoch {epoch+1}/{num_epochs}'):
             images, labels, sites = images.to(device), labels.to(device), sites.to(device)
-            print(torch.max(images), torch.min(images))
+            # print(torch.max(images), torch.min(images))
             # Zero the parameter gradients
             optimizer.zero_grad()
 

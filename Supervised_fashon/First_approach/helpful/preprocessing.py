@@ -34,14 +34,14 @@ def read_image(img_path):
 
 # Paths
 base_path = 'data_DRP/LatestDataset'
-output_path = 'data_DRP/LatestDataset_processed_299'
+output_path = 'data_DRP/LatestDataset_processed_244'
 
 # Create output directory if it does not exist
 if not os.path.exists(output_path):
     os.makedirs(output_path)
 
 # Parameters
-img_size = (299, 299)
+img_size = (224, 244)
 
 # Initialize lists to store data
 data = []

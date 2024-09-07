@@ -22,7 +22,7 @@ def save_images(dataset, save_dir):
         img.save(os.path.join(site_dir, img_name))
 
 # Define the base directory for saving the data
-base_dir = "SplittedDataset"
+base_dir = "SplittedDataset_244"
 
 # Get the stratified train, validation, and test datasets
 stra_train_data, stra_val_data, stra_test_data, idx_to_class, idx_to_site = get_data(full_dataset)
@@ -31,6 +31,5 @@ stra_train_data, stra_val_data, stra_test_data, idx_to_class, idx_to_site = get_
 save_images(stra_train_data, os.path.join(base_dir, "train"))
 save_images(stra_val_data, os.path.join(base_dir, "validation"))
 save_images(stra_test_data, os.path.join(base_dir, "test"))
-
 
 print("Data split and saved successfully.")

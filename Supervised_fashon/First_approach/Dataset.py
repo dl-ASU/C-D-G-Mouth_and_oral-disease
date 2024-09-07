@@ -4,6 +4,7 @@ import numpy as np
 from PIL import Image
 from collections import Counter
 from torchvision import transforms
+from transformations import CustomRandomHorizontalFlip, CustomRandomVerticalFlip
 
 from sklearn.model_selection import train_test_split
 
@@ -15,12 +16,18 @@ sns.set()
 
 
 class CustomDataset(Dataset):
-    def __init__(self, all_data, transform=None, title = "Dist-data", oversample = True,  save_augmented=False, idx_to_class = None, idx_to_site = None, save_path="augmentedDataSet"):
+    def __init__(self, all_data, transform=None, title = "Dist-data", oversample = True,  save_augmented=False, idx_to_class = None, idx_to_site = None, save_path="augmentedDataSet", ignore = True):
         self.transform = transform
         self.title = title
         self.idx_to_class = idx_to_class
         self.idx_to_site = idx_to_site
-
+        self.ignore = ignore
+        self.dic = {'lateral_broder_of_tongue_right': "lateral_broder_of_tongue_left",
+           'lateral_broder_of_tongue_left': "lateral_broder_of_tongue_right", 
+           'lower_labial_mucosa' : "upper_labial_mucosa",
+           'upper_labial_mucosa' : "lower_labial_mucosa",
+           'buccal_mucosa_right' : "buccal_mucosa_left",
+           'buccal_mucosa_left'  : "buccal_mucosa_right"}
         # Populate dataset attributes
         self.image_paths, self.labels, self.sites = zip(*all_data)
         if oversample:
@@ -50,6 +57,15 @@ class CustomDataset(Dataset):
         # Apply transforms
         if self.transform:
             image = self.transform(image)
+            if not self.ignore and self.idx_to_site[site] in self.dic.keys():
+                if isinstance(self.transform, CustomRandomHorizontalFlip) and self.transform.hflip:
+                    newsite = self.dic[self.idx_to_site[site]]
+                    site = self.idx_to_site.index(newsite)
+
+                if isinstance(self.transform, CustomRandomHorizontalFlip) and self.transform.vflip:
+                    newsite = self.dic[self.idx_to_site[site]]
+                    site = self.idx_to_site.index(newsite)
+
             if self.save_augmented:
                 self.save_image(image, idx, self.idx_to_class[label], self.idx_to_site[site])
 
@@ -89,6 +105,7 @@ class CustomDataset(Dataset):
         for img_path, label, site in zip(self.image_paths, self.labels, self.sites):
             key = (label, site)
             count = label_site_counts[key]
+            
             num_duplicates = max_count // count
 
             if key not in remainders:
@@ -181,12 +198,17 @@ def get_data(full_data_path):
     stra_test_data = [all_data[i] for i in test_indices]
     return stra_train_data, stra_test_data, stra_val_data, idx_to_class, idx_to_site
 
-def load_data(data_path):
+def load_data(data_path, ignore):
     # LoadData only
     site_to_idx = {}
     idx_to_site = []
     idx_to_class = []
-
+    dic = {'lateral_broder_of_tongue_right': "lateral_broder_of_tongue",
+           'lateral_broder_of_tongue_left': "lateral_broder_of_tongue", 
+           'lower_labial_mucosa' : "labial_mucosa",
+           'upper_labial_mucosa' : "labial_mucosa",
+           'buccal_mucosa_right' : "buccal_mucosa",
+           'buccal_mucosa_left'  : "buccal_mucosa"}
     all_data = []
 
     for class_idx, class_dir in enumerate(os.listdir(data_path)):
@@ -197,6 +219,9 @@ def load_data(data_path):
         if os.path.isdir(class_path):
             for site in os.listdir(class_path):
                 site_path = os.path.join(class_path, site)
+
+                if ignore and site in dic.keys():
+                    site = dic[site]
 
                 if os.path.isdir(site_path):
                     if site not in site_to_idx:
