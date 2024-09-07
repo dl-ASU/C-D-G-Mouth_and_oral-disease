@@ -36,7 +36,7 @@ def parse_args():
 
     # Boolean flags
     parser.add_argument('--ignore', action='store_true', help="Disable symmetries (default: True, use --ignore to set False)")
-    parser.add_argument('--oversample', action='store_false', help="Disable oversampling")
+    parser.add_argument('--oversample', action='store_true', help="Disable oversampling")
     parser.add_argument('--save_augmented', action='store_true', help="Save augmented data")
 
     return parser.parse_args()
