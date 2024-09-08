@@ -90,7 +90,6 @@ class Model(nn.Module):
         site_encoded = self.site_encoder(site)
         # print("Site_Encoded-shape: ", site_encoded.shape)
 
-        print(img_encoded.shape, site_encoded.shape)
         # Concatenate image and site embeddings
         combined = torch.cat((img_encoded, site_encoded), dim=1)
         # print("Combined-shape: ", combined.shape)
