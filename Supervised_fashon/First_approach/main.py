@@ -57,6 +57,7 @@ transform = transforms.Compose([
     transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]) # Normalize (optional)
 ])
 test_transform = transforms.Compose([
+    transforms.Resize((args.shape, args.shape)),
     transforms.ToTensor(),                                      # Convert image to tensor
     # transforms.RandomApply([transforms.Lambda(lambda x: x + (0.05 * torch.randn_like(x)))], p=0.5), # Channel shift
     transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])

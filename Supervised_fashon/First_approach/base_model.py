@@ -43,7 +43,7 @@ class ImageEncoder(nn.Module):
             model = torch.hub.load('NVIDIA/DeepLearningExamples:torchhub', 'nvidia_efficientnet_b4', pretrained=True)
             return_nodes = {'classifier.dropout': 'features'}
             self.inc_base = create_feature_extractor(model, return_nodes)
-            
+
         else:
             self.conv1 = nn.Conv2d(3, 64, kernel_size=3, padding=1)
             self.conv2 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
