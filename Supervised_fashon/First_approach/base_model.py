@@ -5,7 +5,6 @@ from torchvision.models.feature_extraction import create_feature_extractor
 from transformers import ViTModel
 
 cuda = True if torch.cuda.is_available() else False
-
 device = 'cuda' if cuda else 'cpu'
 
 class ImageEncoder(nn.Module):
@@ -23,22 +22,35 @@ class ImageEncoder(nn.Module):
             self.inc_base = ViTModel.from_pretrained('google/vit-base-patch16-224-in21k',
                                                      id2label=id2label,
                                                      label2id=label2id)
-            # Update all dropout layers in the ViT model to have a probability of 0.1
             self.set_dropout(self.inc_base, p=0.25)
+
+        elif self.base == "effnet_b4":
+            model = timm.create_model('tf_efficientnet_b4', pretrained=True)
+            self.inc_base = nn.Sequential(*list(model.children())[:-1])
+            self.set_dropout(self.inc_base, p=0.25)
+
+        elif self.base == "resnet50":
+            resnet50 = timm.create_model('resnet50', pretrained=True)
+            self.inc_base = nn.Sequential(*list(resnet50.children())[:-1])
+            self.set_dropout(self.inc_base, p=0.25)
+
+        elif self.base == "convnext":
+            convnext_base = timm.create_model('convnext_base', pretrained=True)
+            self.inc_base = nn.Sequential(*list(convnext_base.children())[:-1])
+            self.set_dropout(self.inc_base, p=0.25)
+
         elif self.base == "google":
             model = torch.hub.load('NVIDIA/DeepLearningExamples:torchhub', 'nvidia_efficientnet_b4', pretrained=True)
-            # Define the nodes up to which we want the features (excluding the final fc layer)
-            return_nodes = {
-                'classifier.dropout': 'features'
-            }
-            # Create the feature extractor feature_extractor 
+            return_nodes = {'classifier.dropout': 'features'}
             self.inc_base = create_feature_extractor(model, return_nodes)
+            
         else:
             self.conv1 = nn.Conv2d(3, 64, kernel_size=3, padding=1)
             self.conv2 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
             self.conv3 = nn.Conv2d(128, 256, kernel_size=3, padding=1)
             self.pool = nn.MaxPool2d(kernel_size=2, stride=2, padding=0)
             self.fc1 = nn.Linear(256 * 25 * 25, 512)
+        # print(self.inc_base.default_cfg['input_size'])
 
     def set_dropout(self, model, p):
         """Recursively set dropout probability in a model."""
@@ -47,15 +59,12 @@ class ImageEncoder(nn.Module):
                 module.p = p
 
     def forward(self, x):
-        if self.base == 'inception':
-            x = self.inc_base(x)
-            return x
 
-        elif self.base == 'ViT':
+        if self.base == 'ViT':
             x = self.inc_base(x)
             return x.last_hidden_state
 
-        elif self.base == 'google':
+        elif self.base == 'google' or self.base == 'inception' or self.base == 'effnet_b4' or self.base == 'resnet50' or self.base == 'convnext':
             x = self.inc_base(x)
             return x
 

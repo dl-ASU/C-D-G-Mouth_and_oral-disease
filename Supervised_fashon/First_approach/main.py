@@ -54,7 +54,12 @@ transform = transforms.Compose([
     transforms.ColorJitter(brightness=(0.5, 1.0)),              # Brightness adjustment (0.5 to 1.0)
     transforms.ToTensor(),                                      # Convert image to tensor
     # transforms.RandomApply([transforms.Lambda(lambda x: x + (0.05 * torch.randn_like(x)))], p=0.5), # Channel shift
-    # transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]) # Normalize (optional)
+    transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]) # Normalize (optional)
+])
+test_transform = transforms.Compose([
+    transforms.ToTensor(),                                      # Convert image to tensor
+    # transforms.RandomApply([transforms.Lambda(lambda x: x + (0.05 * torch.randn_like(x)))], p=0.5), # Channel shift
+    transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
 ])
 
 stra_train_data, idx_to_class, idx_to_site = load_data(args.full_train_data_path, args.ignore)
@@ -64,7 +69,7 @@ print(idx_to_site)
 
 train_set = CustomDataset(stra_train_data, transform, "train_distribution", oversample = args.oversample, idx_to_class=idx_to_class, idx_to_site=idx_to_site, save_augmented=args.save_augmented)
 val_set = CustomDataset(stra_test_data, transform, "val_distribution", oversample = args.oversample, idx_to_class=idx_to_class, idx_to_site=idx_to_site, save_augmented=args.save_augmented)
-test_set = CustomDataset(stra_test_data, "test_distribution", oversample=False)
+test_set = CustomDataset(stra_test_data, test_transform, title = "test_distribution", oversample=False)
 
 train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True, num_workers = 4, pin_memory =True)
 val_loader = DataLoader(val_set, batch_size=args.batch_size, shuffle=True, num_workers = 4, pin_memory =True)
@@ -78,6 +83,6 @@ optimizer = optim.Adam(model.parameters(), lr=args.learning_rate)
 scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones = sche_milestones, gamma = args.gamma)
 criterion = nn.CrossEntropyLoss()
 
-train_accuracy, train_precision, train_recall, train_loss, test_accuracy, test_precision, test_recall, test_loss = train(model, criterion, optimizer, scheduler, train_loader, val_loader, args.num_epochs)
+train_accuracy, train_precision, train_recall, train_loss, test_accuracy, test_precision, test_recall, test_loss = train(model, criterion, optimizer, scheduler, train_loader, val_loader, args.num_epochs, args.base)
 plots(train_accuracy, train_precision, train_recall, train_loss, test_accuracy, test_precision, test_recall, test_loss, idx_to_class, idx_to_site, num_classes)
 DoAna(model, test_loader, idx_to_class, idx_to_site)

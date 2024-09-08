@@ -1,1 +1,5 @@
 ['ventral_of_tongue', 'floor_of_mouth', 'lateral_broder_of_tongue', 'labial_mucosa', 'dorsum_of_tongue', 'palate', 'buccal_mucosa', 'gingiva']
+trainable params: 0 || all params: 89337219 || trainable%: 0.0
+Training started.
+trainable params: 1772803 || all params: 89337219 || trainable%: 1.9843946563861585
+torch.Size([24, 1024, 7, 7]) torch.Size([24, 512])

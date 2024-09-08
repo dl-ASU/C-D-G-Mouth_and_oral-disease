@@ -2,13 +2,14 @@ import torch
 import numpy as np
 
 from helpful.helpful import print_trainable_parameters, setTrainable, FreezeFirstN
+from config import dic, epochs_sch
 from base_model import device
 
 from tqdm import tqdm
 
 from sklearn.metrics import accuracy_score, precision_score, recall_score
 
-def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num_epochs):
+def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num_epochs, base = "inception"):
     # Lists to store metrics
     train_accuracy = []
     train_precision = []
@@ -32,35 +33,20 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
         cum_loss = 0
 
         # set more parameters
-        if (epoch == 0):
-            setTrainable(model, 692)
+        if epoch in epochs_sch.keys():
+            setTrainable(model, dic[base][epochs_sch[epoch]])
             print_trainable_parameters(model)
-        elif (epoch == 9):
-            setTrainable(model, 687)
-            print_trainable_parameters(model)
-        elif (epoch == 14):
-            setTrainable(model, 675)
-            print_trainable_parameters(model)
-        elif (epoch == 19):
-            setTrainable(model, 549)
-            print_trainable_parameters(model)
-        elif (epoch == 24):
-            setTrainable(model, 248)
-            print_trainable_parameters(model)
-        elif (epoch == 27):
-            setTrainable(model, 0)
-            print_trainable_parameters(model)
+
 
         for images, labels, sites in tqdm(train_loader, desc=f'Epoch {epoch+1}/{num_epochs}'):
             images, labels, sites = images.to(device), labels.to(device), sites.to(device)
-            # print(torch.max(images), torch.min(images))
-            # Zero the parameter gradients
-            optimizer.zero_grad()
 
             # Forward pass
             outputs = model(images, sites)
             loss = criterion(outputs, labels)
-            print(loss)
+
+            # Zero the parameter gradients
+            optimizer.zero_grad()
 
             # Backward pass and optimize
             loss.backward()
@@ -72,6 +58,7 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
             all_labels.extend(labels.cpu().numpy())
             all_preds.extend(preds.cpu().numpy())
             cum_loss += loss.item()
+
         scheduler.step()
 
         # Calculate metrics
