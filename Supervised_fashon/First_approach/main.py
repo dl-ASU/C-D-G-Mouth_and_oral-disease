@@ -40,22 +40,38 @@ def parse_args():
     parser.add_argument('--ignore', action='store_true', help="Disable symmetries (default: True, use --ignore to set False)")
     parser.add_argument('--oversample', action='store_true', help="Disable oversampling")
     parser.add_argument('--save_augmented', action='store_true', help="Save augmented data")
+    parser.add_argument('--transform', action='store_true', help="More Transformations")
+
 
     return parser.parse_args()
 
 args = parse_args()
-# Define the transformations based on the description provided
-transform = transforms.Compose([
-    transforms.RandomResizedCrop(size=args.shape, scale=(0.8, 1.0)),   # Randomly zoom in/out
-    transforms.RandomRotation(degrees=25),                      # Rotate by 25 degrees
-    CustomRandomHorizontalFlip(p=0.5),                          # Flip horizontally with a 50% chance
-    CustomRandomVerticalFlip(p=0.5),                            # Flip vertically with a 50% chance
-    transforms.RandomAffine(degrees=0, translate=(0.1, 0.1), shear=0),  # Width & height shift, and shear
-    transforms.ColorJitter(brightness=(0.5, 1.0)),              # Brightness adjustment (0.5 to 1.0)
-    transforms.ToTensor(),                                      # Convert image to tensor
-    # transforms.RandomApply([transforms.Lambda(lambda x: x + (0.05 * torch.randn_like(x)))], p=0.5), # Channel shift
-    transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]) # Normalize (optional)
-])
+
+if args.transform:
+    # Define the transformations based on the description provided
+    transform = transforms.Compose([
+        transforms.RandomResizedCrop(size=args.shape, scale=(0.8, 1.0)),   # Randomly zoom in/out
+        transforms.RandomRotation(degrees=25),                      # Rotate by 25 degrees
+        CustomRandomHorizontalFlip(p=0.5),                          # Flip horizontally with a 50% chance
+        CustomRandomVerticalFlip(p=0.5),                            # Flip vertically with a 50% chance
+        transforms.RandomAffine(degrees=0, translate=(0.1, 0.1), shear=0),  # Width & height shift, and shear
+        transforms.ColorJitter(brightness=(0.5, 1.0)),              # Brightness adjustment (0.5 to 1.0)
+        transforms.ToTensor(),                                      # Convert image to tensor
+        # transforms.RandomApply([transforms.Lambda(lambda x: x + (0.05 * torch.randn_like(x)))], p=0.5), # Channel shift
+        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]) # Normalize (optional)
+    ])
+else:
+    # Define the transformations based on the description provided
+    transform = transforms.Compose([
+        transforms.RandomResizedCrop(size=args.shape, scale=(0.8, 1.0)),
+        transforms.RandomRotation(degrees=25),
+        CustomRandomHorizontalFlip(p=0.5),
+        CustomRandomVerticalFlip(p=0.5),
+        transforms.RandomAffine(degrees=0, translate=(0.1, 0.1), shear=0),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+    ])
+    
 test_transform = transforms.Compose([
     transforms.Resize((args.shape, args.shape)),
     transforms.ToTensor(),                                      # Convert image to tensor
