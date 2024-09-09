@@ -6,28 +6,28 @@ class CustomRandomHorizontalFlip(nn.Module):
     def __init__(self, p=0.5):
         super().__init__()
         self.p = p
-        self.hflib = False
+        self.hflip = False
 
     def forward(self, img):
         if torch.rand(1) < self.p:
-            self.hflib = True
+            self.hflip = True
             return transforms.functional.hflip(img)
         else:
-          self.hflib = False
+          self.hflip = False
           return img
 
 class CustomRandomVerticalFlip(nn.Module):
     def __init__(self, p=0.5):
         super().__init__()
         self.p = p
-        self.vflib = False
+        self.vflip = False
 
     def forward(self, img):
         if torch.rand(1) < self.p:
-            self.vflib = True
+            self.vflip = True
             return transforms.functional.vflip(img)
         else:
-          self.vflib = False
+          self.vflip = False
           return img
 
 # Explanation of each transformation:

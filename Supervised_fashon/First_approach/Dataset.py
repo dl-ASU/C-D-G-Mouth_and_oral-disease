@@ -22,12 +22,13 @@ class CustomDataset(Dataset):
         self.idx_to_class = idx_to_class
         self.idx_to_site = idx_to_site
         self.ignore = ignore
-        self.dic = {'lateral_broder_of_tongue_right': "lateral_broder_of_tongue_left",
-           'lateral_broder_of_tongue_left': "lateral_broder_of_tongue_right", 
-           'lower_labial_mucosa' : "upper_labial_mucosa",
-           'upper_labial_mucosa' : "lower_labial_mucosa",
+        self.hdic = {'lateral_broder_of_tongue_right': "lateral_broder_of_tongue_left",
+           'lateral_broder_of_tongue_left': "lateral_broder_of_tongue_right",
            'buccal_mucosa_right' : "buccal_mucosa_left",
            'buccal_mucosa_left'  : "buccal_mucosa_right"}
+        self.vdic = { 
+           'lower_labial_mucosa' : "upper_labial_mucosa",
+           'upper_labial_mucosa' : "lower_labial_mucosa"}
 
         # Populate dataset attributes
         self.image_paths, self.labels, self.sites = zip(*all_data)
@@ -58,14 +59,15 @@ class CustomDataset(Dataset):
         # Apply transforms
         if self.transform:
             image = self.transform(image)
-            if not self.ignore and self.idx_to_site[site] in self.dic.keys():
-                if isinstance(self.transform, CustomRandomHorizontalFlip) and self.transform.hflip:
-                    newsite = self.dic[self.idx_to_site[site]]
-                    site = self.idx_to_site.index(newsite)
+            if not self.ignore:
+                for t in self.transform.transforms:
+                    if isinstance(t, CustomRandomHorizontalFlip) and t.hflip and self.idx_to_site[site] in self.hdic.keys():
+                        newsite = self.hdic[self.idx_to_site[site]]
+                        site = self.idx_to_site.index(newsite)
 
-                if isinstance(self.transform, CustomRandomVerticalFlip) and self.transform.vflip:
-                    newsite = self.dic[self.idx_to_site[site]]
-                    site = self.idx_to_site.index(newsite)
+                    if isinstance(t, CustomRandomVerticalFlip) and t.vflip and self.idx_to_site[site] in self.vdic.keys():
+                        newsite = self.vdic[self.idx_to_site[site]]
+                        site = self.idx_to_site.index(newsite)
 
             if self.save_augmented:
                 self.save_image(image, idx, self.idx_to_class[label], self.idx_to_site[site])

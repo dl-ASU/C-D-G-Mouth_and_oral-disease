@@ -48,6 +48,7 @@ The `Classifier` combines both image and site features and passes them through f
 
 ## Data Flow
 
+### First approach (SEmodel.py)
 The data flow within the model follows these steps:
 
 1. **Images** are passed through the `ImageEncoder`, producing `img_encoded`.
@@ -55,6 +56,18 @@ The data flow within the model follows these steps:
 3. Both `img_encoded` and `site_encoded` are concatenated to form the `combined` representation.
 4. The `combined` representation is fed into the `Classifier`, which outputs the final classification prediction.
 
+### Second approach (EESmodel.py modify this file for this approach)
+The data flow within the model follows these steps:
+
+1. **Sites** are passed through the `SiteEncoder`, producing `site_encoded`.
+2. Both **Images** and `site_encoded` are concatenated in the feature maps or just added (we can try both) to form the `combined` representation.
+3. The `combined` are passed through the `ImageEncoder`, producing `img_encoded`.
+4. Then this representation is fed into the `Classifier`, which outputs the final classification prediction.
+
+### Another approach (MSmodel.py):
+In this approach, only image features are used to predict the cancer class (high, low, normal). Site information is incorporated during the decision process using masking.
+
+### NOTE you can think with other ways for encoding the site information but remember the goal is to enhance the model to learn site specific feature not just to encode this info.
 ---
 
 ## Repository Structure
@@ -82,7 +95,6 @@ The repository is organized as follows:
 │   │   ├── EESmodel.py             # Model architecture (Extended Embedding)
 │   │   ├── MSmodel.py              # Model for multi-site tasks
 │   │   ├── SEmodel.py              # Model for supervised learning with site embeddings
-│   │   ├── Tmodel.py               # Task-specific model architecture
 │   │   ├── transformations.py      # Image transformations/augmentations
 │   │   ├── train.py                # Training pipeline
 │   │   ├── main.py                 # Main script for running training/evaluation
@@ -96,7 +108,7 @@ The repository is organized as follows:
 ## Future Work
 
 - Implement the **Second Approach** for site conditioning.
-- Experiment with **pretrained models** such as InceptionResNet, GoogLeNet, or Vision Transformers (ViT).
+- Experiment with **pretrained models** such as InceptionResNet, GoogLeNet, or Vision Transformers (ViT) and do intensive hyperparameter tuning.
 - Apply **joint embedding methods** (in progress).
 - Explore **regularization** and other advanced architectural techniques for further improvements.
 

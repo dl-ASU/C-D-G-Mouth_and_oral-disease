@@ -62,15 +62,14 @@ test_transform = transforms.Compose([
     # transforms.RandomApply([transforms.Lambda(lambda x: x + (0.05 * torch.randn_like(x)))], p=0.5), # Channel shift
     transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
 ])
-
 stra_train_data, idx_to_class, idx_to_site = load_data(args.full_train_data_path, args.ignore)
 stra_test_data, _, _ = load_data(args.full_test_data_path, args.ignore)
 stra_val_data, _, _ = load_data(args.full_val_data_path, args.ignore)
 print(idx_to_site)
 
-train_set = CustomDataset(stra_train_data, transform, "train_distribution", oversample = args.oversample, idx_to_class=idx_to_class, idx_to_site=idx_to_site, save_augmented=args.save_augmented)
-val_set = CustomDataset(stra_test_data, transform, "val_distribution", oversample = args.oversample, idx_to_class=idx_to_class, idx_to_site=idx_to_site, save_augmented=args.save_augmented)
-test_set = CustomDataset(stra_test_data, test_transform, title = "test_distribution", oversample=False)
+train_set = CustomDataset(stra_train_data, transform, "train_distribution", oversample = args.oversample, idx_to_class=idx_to_class, idx_to_site=idx_to_site, save_augmented=args.save_augmented, ignore=args.ignore)
+val_set = CustomDataset(stra_test_data, transform, "val_distribution", oversample = args.oversample, idx_to_class=idx_to_class, idx_to_site=idx_to_site, save_augmented=args.save_augmented, ignore=args.ignore)
+test_set = CustomDataset(stra_test_data, test_transform, title = "test_distribution", oversample=False, ignore=args.ignore)
 
 train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True, num_workers = 4, pin_memory =True)
 val_loader = DataLoader(val_set, batch_size=args.batch_size, shuffle=True, num_workers = 4, pin_memory =True)
