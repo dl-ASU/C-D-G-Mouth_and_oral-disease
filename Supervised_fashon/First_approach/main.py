@@ -50,7 +50,7 @@ transform = transforms.Compose([
     transforms.RandomRotation(degrees=25),                      # Rotate by 25 degrees
     CustomRandomHorizontalFlip(p=0.5),                          # Flip horizontally with a 50% chance
     CustomRandomVerticalFlip(p=0.5),                            # Flip vertically with a 50% chance
-    transforms.RandomAffine(degrees=0, translate=(0.1, 0.1), shear=0.2),  # Width & height shift, and shear
+    transforms.RandomAffine(degrees=0, translate=(0.1, 0.1), shear=0),  # Width & height shift, and shear
     transforms.ColorJitter(brightness=(0.5, 1.0)),              # Brightness adjustment (0.5 to 1.0)
     transforms.ToTensor(),                                      # Convert image to tensor
     # transforms.RandomApply([transforms.Lambda(lambda x: x + (0.05 * torch.randn_like(x)))], p=0.5), # Channel shift
