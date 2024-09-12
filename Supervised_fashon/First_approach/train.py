@@ -43,17 +43,17 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
 
             # Forward pass
             outputs = model(images, sites)
-            loss = criterion(outputs, labels)
+            loss = criterion(outputs, labels + 3 * sites)
 
             # Zero the parameter gradients
             optimizer.zero_grad()
-
             # Backward pass and optimize
             loss.backward()
             optimizer.step()
 
             # Get predictions and true labels
             _, preds = torch.max(outputs, 1)
+            preds = preds % 3
 
             all_labels.extend(labels.cpu().numpy())
             all_preds.extend(preds.cpu().numpy())
@@ -83,11 +83,12 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
                 images, labels, sites = images.to(device), labels.to(device), sites.to(device)
 
                 # Forward pass
-                outputs = model(images, sites)
-                t_loss += criterion(outputs, labels).item()
+                outputs = model(images, sites )
+                t_loss += criterion(outputs, labels  + 3 * sites).item()
 
                 # Get predictions and true labels
                 _, preds = torch.max(outputs, 1)
+                preds = preds % 3
 
                 test_labels.extend(labels.cpu().numpy())
                 test_preds.extend(preds.cpu().numpy())
