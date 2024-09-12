@@ -4,7 +4,7 @@ num_sites = 11
 embedding_dim = 128
 learning_rate = 0.001
 num_epochs = 40
-l2 = 1e-6
+l2 = 0.01
 batch_size = 24
 gamma = 0.75
 

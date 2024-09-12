@@ -17,7 +17,7 @@ def PredictionDistribution(error_counter, class_names, site_names, title):
         site_label_counts[site_name][pred_label] += count
 
     # Display the analysis
-    print("Site-Specific Prediction Distribution:")
+    print(f"Site-Specific {title}:")
     for site, label_counts in site_label_counts.items():
         print(f"\nSite: {site}")
         total = sum(label_counts.values())
