@@ -45,7 +45,6 @@ def parse_args():
     parser.add_argument('--transform', action='store_true', help="More Transformations")
     parser.add_argument('--freeze', action='store_true', help="Freeze True")
 
-
     return parser.parse_args()
 
 args = parse_args()
@@ -68,8 +67,8 @@ else:
     transform = transforms.Compose([
         transforms.RandomResizedCrop(size=args.shape, scale=(0.9, 1.0)),
         transforms.RandomRotation(degrees=25),
-        CustomRandomHorizontalFlip(p=0.5),
-        CustomRandomVerticalFlip(p=0.5),
+        # CustomRandomHorizontalFlip(p=0.5),
+        # CustomRandomVerticalFlip(p=0.5),
         transforms.RandomAffine(degrees=0, translate=(0.1, 0.1), shear=0),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])

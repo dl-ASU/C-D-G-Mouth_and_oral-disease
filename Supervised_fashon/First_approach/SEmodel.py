@@ -21,7 +21,7 @@ class Classifier(nn.Module):
         self.base = base
         self.num_classes = num_classes
         self.softmax = nn.Softmax(dim=1)
-        
+
         # Adjust input size of the first FC layer based on the image encoder backbone
         if self.base == 'inception':
             self.fc1 = nn.Linear(1536 + 512, 1024)
@@ -75,13 +75,13 @@ class Model(nn.Module):
 
         # Pass image through the image encoder
         img_encoded = self.image_encoder(img)
-        
+
         if self.base == "ViT":
             # Max pooling for ViT to combine patch embeddings
             img_encoded = self.max(img_encoded.transpose(1, 2)).squeeze(2)
         elif self.base == "google":
             img_encoded = img_encoded["features"]
-        
+
         # Pass site information through the site encoder
         site_encoded = self.site_encoder(site)
 
@@ -90,5 +90,5 @@ class Model(nn.Module):
 
         # Pass the combined embeddings through the classifier
         output = self.classifier(combined)
-        
+
         return output
