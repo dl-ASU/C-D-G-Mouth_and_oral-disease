@@ -14,7 +14,9 @@ class Classifier(nn.Module):
             self.fc1 = nn.Linear(1536, 1024)
         elif self.base == 'ViT':
             self.fc1 = nn.Linear(768, 1024)
-        elif self.base == "google":
+        elif self.base == 'resnet50':
+            self.fc1 = nn.Linear(2048, 1024)
+        elif self.base == "google" or self.base == "effnet_b4":
             self.fc1 = nn.Linear(1792, 1024)
         else:
             self.fc1 = nn.Linear(512, 1024)
@@ -35,11 +37,9 @@ class Classifier(nn.Module):
 
         # Reshape to (batch_size, num_sites, num_classes)
         x = x.view(-1, self.num_sites, self.num_classes)
-
         mask = torch.full_like(x, float('-inf'))
         for i in range(x.size(0)):
             mask[i, site[i]] = 0 
-
         x = x + mask
 
         # Reshape back to (batch_size, num_sites * num_classes)

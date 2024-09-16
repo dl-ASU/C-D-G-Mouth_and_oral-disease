@@ -1,14 +1,16 @@
 import torch
 import numpy as np
 
-from helpful import print_trainable_parameters, setTrainable, FreezeFirstN
+from helpful.helpful import print_trainable_parameters, setTrainable, FreezeFirstN
+from config import dic, epochs_sch
 from base_model import device
 
 from tqdm import tqdm
 
 from sklearn.metrics import accuracy_score, precision_score, recall_score
 
-def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num_epochs):
+def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num_epochs, base = "inception", freeze = False):
+
     # Lists to store metrics
     train_accuracy = []
     train_precision = []
@@ -19,59 +21,45 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
     test_precision = []
     test_recall = []
     test_loss = []
-
-    FreezeFirstN(model, 10000)
+    if freeze:
+        FreezeFirstN(model, 10000)
     print_trainable_parameters(model)
 
     print('Training started.')
-    # Training loop 416, 413, 400, 387, 348, 283
+
     for epoch in range(num_epochs):
         model.train()
         all_labels = []
         all_preds = []
         cum_loss = 0
-        if (epoch == 0):
-            setTrainable(model, 600)
+
+        # set more parameters
+        if freeze and epoch in epochs_sch.keys():
+            setTrainable(model, dic[base][epochs_sch[epoch]])
             print_trainable_parameters(model)
-        elif (epoch == 9):
-            setTrainable(model, 550)
-            print_trainable_parameters(model)
-        elif (epoch == 14):
-            setTrainable(model, 400)
-            print_trainable_parameters(model)
-        elif (epoch == 19):
-            setTrainable(model, 0) # 387
-            print_trainable_parameters(model)
-        elif (epoch == 29):
-            setTrainable(model, 348)
-            print_trainable_parameters(model)
-        elif (epoch == 39):
-            setTrainable(model, 283)
-            print_trainable_parameters(model)
-        elif (epoch == 44):
-            setTrainable(model, 0)
-            print_trainable_parameters(model)
+
 
         for images, labels, sites in tqdm(train_loader, desc=f'Epoch {epoch+1}/{num_epochs}'):
             images, labels, sites = images.to(device), labels.to(device), sites.to(device)
 
-            # Zero the parameter gradients
-            optimizer.zero_grad()
-
             # Forward pass
             outputs = model(images, sites)
-            loss = criterion(outputs, labels) # sites + 11 * labels
+            loss = criterion(outputs, labels) # labels + 3 * sites
 
+            # Zero the parameter gradients
+            optimizer.zero_grad()
             # Backward pass and optimize
             loss.backward()
             optimizer.step()
 
             # Get predictions and true labels
             _, preds = torch.max(outputs, 1)
+            # preds = preds % 3
 
             all_labels.extend(labels.cpu().numpy())
-            all_preds.extend(preds.cpu().numpy()) # torch.div(preds, 11, rounding_mode='floor')
+            all_preds.extend(preds.cpu().numpy())
             cum_loss += loss.item()
+
         scheduler.step()
 
         # Calculate metrics
@@ -96,15 +84,16 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
                 images, labels, sites = images.to(device), labels.to(device), sites.to(device)
 
                 # Forward pass
-                outputs = model(images, sites)
-                t_loss += criterion(outputs, labels).item() # sites + 11 * labels
+                outputs = model(images, sites )
+                t_loss += criterion(outputs, labels).item() # labels  + 3 * sites
 
                 # Get predictions and true labels
                 _, preds = torch.max(outputs, 1)
+                # preds = preds % 3
 
                 test_labels.extend(labels.cpu().numpy())
-                test_preds.extend(preds.cpu().numpy())  # torch.div(preds, 11, rounding_mode='floor')
-
+                test_preds.extend(preds.cpu().numpy())
+    
         # Calculate metrics
         Tepoch_accuracy = accuracy_score(test_labels, test_preds)
         Tepoch_precision = precision_score(test_labels, test_preds, average=None)
@@ -116,7 +105,8 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
         test_precision.append(Tepoch_precision.tolist())
         test_recall.append(Tepoch_recall.tolist())
         test_loss.append(t_loss)
-        # torch.save(model.state_dict(), f'/home/waleed/Documents/Medical/model_version_{epoch + 1}.pth')
+
+        # torch.save(model.state_dict(), f"model_{base}_epoch_{epoch}.pth") # /home/waleed/Documents/Medical/results/
 
         print(f'Epoch [{epoch + 1}/{num_epochs}], Loss: {cum_loss:.4f}, Accuracy: {epoch_accuracy:.4f}, Precision: {np.mean(epoch_precision):.4f}, Recall: {np.mean(epoch_recall):.4f}')
         print(f'Epoch [{epoch + 1}/{num_epochs}], Loss: {t_loss:.4f}, Accuracy: {Tepoch_accuracy:.4f}, Precision: {np.mean(Tepoch_precision):.4f}, Recall: {np.mean(Tepoch_recall):.4f}')

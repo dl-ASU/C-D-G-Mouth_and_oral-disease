@@ -17,7 +17,7 @@ def PredictionDistribution(error_counter, class_names, site_names, title):
         site_label_counts[site_name][pred_label] += count
 
     # Display the analysis
-    print("Site-Specific Prediction Distribution:")
+    print(f"Site-Specific {title}:")
     for site, label_counts in site_label_counts.items():
         print(f"\nSite: {site}")
         total = sum(label_counts.values())
@@ -50,7 +50,7 @@ def PredictionDistribution(error_counter, class_names, site_names, title):
     plt.suptitle(title)
     plt.show()
 
-    
+
 def accuracy(error_counter, class_names, site_names):
     # Initialize counters for each site and label combination
     site_label_true_pred = {site: {label: {'correct': 0, 'total': 0} for label in class_names} for site in site_names}
@@ -93,6 +93,7 @@ def accuracy(error_counter, class_names, site_names):
     plt.tight_layout()
     plt.suptitle("Accuracy for each site on each label (recall)")
     plt.show()
+
 
 def ConfusionANDerrors(error_counter, class_names, site_names):
     # Extract true labels and predicted labels
@@ -138,7 +139,8 @@ def ConfusionANDerrors(error_counter, class_names, site_names):
     for (true_class, pred_class, sample_index), count in error_counter.items():
         if true_class != pred_class:
             print(f"Sample Index {sample_index}: True Label = {class_names[true_class]}, Predicted Label = {class_names[pred_class]} (Count: {count})")
-    
+
+
 def confusionAnalysis(error_counter, class_names, site_names):
     # Initialize confusion matrix and total errors for each site
     confusion_matrix = {site: {label: {other_label: 0 for other_label in class_names} for label in class_names} for site in site_names}
