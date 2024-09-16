@@ -10,6 +10,7 @@ from tqdm import tqdm
 from sklearn.metrics import accuracy_score, precision_score, recall_score
 
 def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num_epochs, base = "inception", freeze = False):
+
     # Lists to store metrics
     train_accuracy = []
     train_precision = []
