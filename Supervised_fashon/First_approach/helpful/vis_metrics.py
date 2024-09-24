@@ -164,7 +164,7 @@ def DoAna(model, test_loader, idx_to_class, idx_to_site,folder_name,csv_name):
         for images, labels, sites in test_loader:
             images, labels, sites = images.to(device), labels.to(device), sites.to(device)
             
-            for image,site , label in images,sites,labels:
+            for image, site, label in zip(images, sites, labels):
                 
                 data.loc[image_id, 'ID'] = image_id
                 data.loc[image_id, 'Site'] = idx_to_site[site.item()]
