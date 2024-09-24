@@ -27,9 +27,9 @@ class Classifier(nn.Module):
             self.fc1 = nn.Linear(1536 + 512, 1024)
         elif self.base == 'ViT':
             self.fc1 = nn.Linear(768 + 512, 1024)
-        elif self.base == 'resnet50':
+        elif self.base in {'resnet50', 'ser'}:
             self.fc1 = nn.Linear(2048 + 512, 1024)
-        elif self.base == "google" or self.base == "effnet_b4":
+        elif self.base == {"google", "effnet_b4"}:
             self.fc1 = nn.Linear(1792 + 512, 1024)
         elif self.base == "convnext":
             self.fc1 = nn.Linear(1024 + 512, 1024)

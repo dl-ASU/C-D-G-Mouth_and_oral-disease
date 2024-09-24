@@ -7,8 +7,10 @@ from torchvision import transforms
 from transformations import CustomRandomHorizontalFlip, CustomRandomVerticalFlip
 from basic_model import BasicModel
 from Dataset import CustomDataset, load_data
+from base_model import device
 from SEmodel import Model
 from train import train
+
 from base_model import device
 from config import imagenet_mean, imagenet_std, batch_size, num_classes, num_epochs, num_sites, learning_rate, sche_milestones, gamma, l2, embedding_dim,dropout
 from config import full_train_data_path, full_val_data_path, full_test_data_path
