@@ -14,7 +14,8 @@ from config import imagenet_mean, imagenet_std, batch_size, num_classes, num_epo
 from config import full_train_data_path, full_val_data_path, full_test_data_path
 
 from helpful.vis_metrics import plots, DoAna
-
+import warnings
+warnings.filterwarnings("ignore")
 import argparse
 
 def parse_args():

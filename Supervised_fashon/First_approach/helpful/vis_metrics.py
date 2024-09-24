@@ -9,6 +9,8 @@ import torchvision
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
 import seaborn as sns
+import warnings
+warnings.filterwarnings("ignore")
 sns.set()
 
 def plots(train_accuracy, train_precision, train_recall, train_loss, test_accuracy, test_precision, test_recall, test_loss, idx_to_class, idx_to_sites, num_classes = 3):
@@ -196,7 +198,7 @@ def DoAna(model, test_loader, idx_to_class, idx_to_site,folder_name,csv_name):
             test_preds.extend(preds.cpu().numpy())
             t_sites.extend(sites.cpu().numpy())
             
-    data.to_csv(csv_name, index=False)
+    data.to_csv(f'{csv_name}.csv', index=False)
     
     error_analysis = label_site_error_analysis(test_labels, test_preds, t_sites)
     data_analysis = label_site_all_analysis(test_labels, test_preds, t_sites)

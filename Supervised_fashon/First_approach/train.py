@@ -4,7 +4,8 @@ import numpy as np
 from helpful.helpful import print_trainable_parameters, setTrainable, FreezeFirstN
 from config import dic, epochs_sch
 from base_model import device
-
+import warnings
+warnings.filterwarnings("ignore")
 from tqdm import tqdm
 
 from sklearn.metrics import accuracy_score, precision_score, recall_score
