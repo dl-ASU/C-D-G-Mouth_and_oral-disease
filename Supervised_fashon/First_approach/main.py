@@ -99,6 +99,7 @@ stra_test_data, _, _ = load_data(args.full_test_data_path, args.ignore)
 stra_val_data, _, _ = load_data(args.full_val_data_path, args.ignore)
 print(idx_to_site)
 
+print(idx_to_class)
 train_set = CustomDataset(stra_train_data, transform, "train_distribution", oversample = args.oversample, idx_to_class=idx_to_class, idx_to_site=idx_to_site, save_augmented=args.save_augmented, ignore=args.ignore)
 val_set = CustomDataset(stra_test_data, transform, "val_distribution", oversample = args.oversample, idx_to_class=idx_to_class, idx_to_site=idx_to_site, save_augmented=args.save_augmented, ignore=args.ignore)
 test_set = CustomDataset(stra_test_data, test_transform, title = "test_distribution", oversample=False, ignore=args.ignore)
