@@ -156,7 +156,7 @@ def DoAna(model, test_loader, idx_to_class, idx_to_site,folder_name,csv_name):
     test_preds = []
     t_sites = []
     
-    data = pd.DataFrame(columns=['ID','Site','Class label','Predicted label','Normal','Low','High'])
+    data = pd.DataFrame(columns=['ID','Site','Class label','Predicted label','Low','Normal','High'])
     image_id = 0
 
     # Create an empty folder
@@ -169,19 +169,21 @@ def DoAna(model, test_loader, idx_to_class, idx_to_site,folder_name,csv_name):
             for image, site, label in zip(images, sites, labels):
                 
                 output = model(image.unsqueeze(0), site.unsqueeze(0))
+                
                 prob = F.softmax(output, dim=1)
+                
                 _, pred = torch.max(output, 1)
                 
+                
                 if pred.item() != label.item():
-                    
                     data.loc[image_id, 'ID'] = image_id
                     data.loc[image_id, 'Site'] = idx_to_site[site.item()]
                     data.loc[image_id, 'Class label'] = idx_to_class[label.item()]
                     
                     data.loc[image_id, 'Predicted label'] = idx_to_class[pred.item()]
-                    data.loc[image_id, 'Normal'] = prob[0][2].item()
-                    data.loc[image_id, 'Low'] = prob[0][1].item()
-                    data.loc[image_id, 'High'] = prob[0][0].item()
+                    data.loc[image_id, 'Normal'] = prob[0][1].item()
+                    data.loc[image_id, 'Low'] = prob[0][0].item()
+                    data.loc[image_id, 'High'] = prob[0][2].item()
                     image_id += 1
                     
                     # Save the image in the folder
