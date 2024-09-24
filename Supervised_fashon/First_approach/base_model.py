@@ -44,6 +44,11 @@ class ImageEncoder(nn.Module):
             return_nodes = {'classifier.dropout': 'features'}
             self.inc_base = create_feature_extractor(model, return_nodes)
 
+        elif self.base == "ser":
+            model = timm.create_model('seresnextaa101d_32x8d.sw_in12k_ft_in1k_288', pretrained=True)
+            self.inc_base = nn.Sequential(*list(model.children())[:-1])
+            self.set_dropout(self.inc_base, p=0.25)
+
         else:
             self.conv1 = nn.Conv2d(3, 64, kernel_size=3, padding=1)
             self.conv2 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
@@ -64,7 +69,7 @@ class ImageEncoder(nn.Module):
             x = self.inc_base(x)
             return x.last_hidden_state
 
-        elif self.base == 'google' or self.base == 'inception' or self.base == 'effnet_b4' or self.base == 'resnet50' or self.base == 'convnext':
+        elif self.base in {'ser', 'google', 'inception', 'effnet_b4', 'resnet50', 'convnext'}:
             x = self.inc_base(x)
             return x
 
