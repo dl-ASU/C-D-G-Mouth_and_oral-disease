@@ -3,7 +3,7 @@ from torch import nn
 import timm
 from torchvision.models.feature_extraction import create_feature_extractor
 from transformers import ViTModel
-
+from config import pre_trained
 cuda = True if torch.cuda.is_available() else False
 device = 'cuda' if cuda else 'cpu'
 
@@ -26,6 +26,7 @@ class ImageEncoder(nn.Module):
                                                      id2label=id2label,
                                                      label2id=label2id)
             self.set_dropout(self.inc_base, p=0.25)
+            self.feature_vector = 768
 
         elif self.base == "effnet_b4":
             model = timm.create_model('tf_efficientnet_b4', pretrained=True)
@@ -44,8 +45,8 @@ class ImageEncoder(nn.Module):
             self.feature_vector = 2048
 
         elif self.base == "convnext":
-            self.inc_base = timm.create_model('convnext_base', pretrained=True)
-            # self.inc_base = nn.Sequential(*list(convnext_base.children())[:-1])
+            convnext_base = timm.create_model('convnext_base', pretrained=True)
+            self.inc_base = nn.Sequential(*list(convnext_base.children())[:-1])
             if freeze_base:
                 self.freeze_base()
             self.set_dropout(self.inc_base, p=dropout)
@@ -60,6 +61,7 @@ class ImageEncoder(nn.Module):
             model = timm.create_model('seresnextaa101d_32x8d.sw_in12k_ft_in1k_288', pretrained=True)
             self.inc_base = nn.Sequential(*list(model.children())[:-1])
             self.set_dropout(self.inc_base, p=0.25)
+            self.feature_vector = 2048
 
         elif self.base =='densenet':
             densenet = timm.create_model('densenet201', pretrained=True)
@@ -94,7 +96,7 @@ class ImageEncoder(nn.Module):
             x = self.inc_base(x)
             return x.last_hidden_state
 
-        elif self.base in {'ser', 'google', 'inception', 'effnet_b4', 'resnet50', 'convnext'}:
+        elif self.base in pre_trained:
             x = self.inc_base(x)
             return x
 
@@ -102,6 +104,6 @@ class ImageEncoder(nn.Module):
             x = self.pool(self.relu(self.conv1(x)))
             x = self.pool(self.relu(self.conv2(x)))
             x = self.pool(self.relu(self.conv3(x)))
-            x = x.view(x.size(0), -1)  # Flatten the tensor
+            x = x.view(x.size(0), -1) 
             x = self.relu(self.fc1(x))
             return x

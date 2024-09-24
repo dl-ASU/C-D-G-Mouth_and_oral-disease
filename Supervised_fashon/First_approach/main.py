@@ -5,7 +5,6 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from transformations import CustomRandomHorizontalFlip, CustomRandomVerticalFlip
-from basic_model import BasicModel
 from Dataset import CustomDataset, load_data
 from base_model import device
 from SEmodel import Model
@@ -95,7 +94,7 @@ test_transform = transforms.Compose([
     # transforms.RandomApply([transforms.Lambda(lambda x: x + (0.05 * torch.randn_like(x)))], p=0.5), # Channel shift
     transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
 ])
-
+ 
 stra_train_data, idx_to_class, idx_to_site = load_data(args.full_train_data_path, args.ignore)
 stra_test_data, _, _ = load_data(args.full_test_data_path, args.ignore)
 stra_val_data, _, _ = load_data(args.full_val_data_path, args.ignore)
@@ -112,7 +111,7 @@ test_loader = DataLoader(test_set, batch_size=args.batch_size, shuffle=False, nu
 
 torch.cuda.empty_cache()
 
-model = BasicModel(num_classes=args.num_classes, num_sites=args.num_sites, base = args.base , freeze_base=args.freeze_base , dropout = args.dropout)
+model = Model(num_classes=args.num_classes, num_sites=args.num_sites, base = args.base)
 model = nn.DataParallel(model).to(device)
 
 if args.optim == "AdamW":

@@ -8,7 +8,6 @@ l2 = 0.01
 batch_size = 32
 gamma = 0.75
 dropout=0.1
-
 sche_milestones = [10, 20, 30, 40, 42, 43, 44, 45, 46, 47, 48, 49]
 
 our_mean = [0.5027, 0.5017, 0.5018]
@@ -16,6 +15,8 @@ our_std = [0.2904, 0.2886, 0.2886]
 
 imagenet_mean=[0.485, 0.456, 0.406]
 imagenet_std=[0.229, 0.224, 0.225]
+
+pre_trained = {'ser', 'google', 'inception', 'effnet_b4', 'resnet50', 'convnext'}
 
 #                    [5, 11, 15, 45, 90, 100] % 
 dic = {"inception": [692, 687, 675, 549, 248, 0],     # output: 1536                                                                55 m
