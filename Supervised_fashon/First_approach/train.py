@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 from sklearn.metrics import accuracy_score, precision_score, recall_score
 
-def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num_epochs, base = "inception", freeze = False, to_freeze = 0,use_scheduler=False):
+def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num_epochs, base = "inception", freeze = False, use_scheduler = False):
 
     # Lists to store metrics
     train_accuracy = []
@@ -23,7 +23,7 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
     test_recall = []
     test_loss = []
     if freeze:
-        FreezeFirstN(model, to_freeze)
+        FreezeFirstN(model, 10000)
     print_trainable_parameters(model)
 
     print('Training started.')
@@ -38,7 +38,6 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
         if freeze and epoch in epochs_sch.keys():
             setTrainable(model, dic[base][epochs_sch[epoch]])
             print_trainable_parameters(model)
-
 
         for images, labels, sites in tqdm(train_loader, desc=f'Epoch {epoch+1}/{num_epochs}'):
             images, labels, sites = images.to(device), labels.to(device), sites.to(device)

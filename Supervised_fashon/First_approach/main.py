@@ -33,8 +33,8 @@ def parse_args():
     parser.add_argument('--feedforward', type=int, default=512, help="feedforward")
     parser.add_argument('--n_layers', type=int, default=8, help="n_layers")
     
-    parser.add_argument('--folder_name', type=str, default='Testing Images', help="Folder name of the testing images")
-    parser.add_argument('--csv_name', type=str, default='output_csv', help="Csv output of the images")
+    parser.add_argument('--folder_name', type=str, default='MisClassified_Images', help="Folder name of the testing images")
+    parser.add_argument('--csv_name', type=str, default='MisClassified_Images', help="Csv output of the images")
 
     parser.add_argument('--num_epochs', type=int, default=num_epochs, help="Number of epochs")
     parser.add_argument('--l2', type=float, default=l2, help="L2 regularization")
@@ -68,12 +68,12 @@ if args.transform:
         transforms.RandomResizedCrop(size=args.shape, scale=(0.8, 1.0)),   # Randomly zoom in/out
         transforms.RandomRotation(degrees=35),                      # Rotate by 25 degrees
         CustomRandomHorizontalFlip(p=0.5),                          # Flip horizontally with a 50% chance
-        CustomRandomVerticalFlip(p=0.5),                            # Flip vertically with a 50% chance
+        # CustomRandomVerticalFlip(p=0.5),                            # Flip vertically with a 50% chance
         transforms.RandomAffine(degrees=10, translate=(0.15, 0.15), shear=0.2),  # Width & height shift, and shear
         transforms.ColorJitter(brightness=(0.5, 1.0)),              # Brightness adjustment (0.5 to 1.0)
         transforms.ToTensor(),                                      # Convert image to tensor
         # transforms.RandomApply([transforms.Lambda(lambda x: x + (0.05 * torch.randn_like(x)))], p=0.5), # Channel shift
-        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]) # Normalize (optional)
+        transforms.Normalize(mean=imagenet_mean, std=imagenet_std)
     ])
 else:
     # Define the transformations based on the description provided
@@ -82,10 +82,10 @@ else:
         # transforms.RandomRotation(degrees=25),
         # CustomRandomHorizontalFlip(p=0.5),
         # CustomRandomVerticalFlip(p=0.5),
-        # transforms.RandomAffine(degrees=0, translate=(0.1, 0.1), shear=0),
+        transforms.RandomAffine(degrees=0, translate=(0.1, 0.1), shear=0),
         transforms.Resize((args.shape, args.shape)),
         transforms.ToTensor(),
-        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5])
+        transforms.Normalize(mean=imagenet_mean, std=imagenet_std)
     ])
 
 test_transform = transforms.Compose([
@@ -115,21 +115,18 @@ model = Model(num_classes=args.num_classes, num_sites=args.num_sites, base = arg
 model = nn.DataParallel(model).to(device)
 
 if args.optim == "AdamW":
-    optimizer = optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=args.l2,fused=True)
-
+    optimizer = optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=args.l2)
 elif args.optim=='RMSprop':
     optimizer = optim.RMSprop(model.parameters(), lr=args.learning_rate,weight_decay=args.l2)
-    
 elif args.optim=='Adagrad':
     optimizer = optim.Adagrad(model.parameters(), lr=args.learning_rate,weight_decay=args.l2)
-    
 else:
     optimizer = optim.Adam(model.parameters(), lr=args.learning_rate , weight_decay=args.l2)
 
 scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones = sche_milestones, gamma = args.gamma)
 criterion = nn.CrossEntropyLoss()
 
-train_accuracy, train_precision, train_recall, train_loss, test_accuracy, test_precision, test_recall, test_loss = train(model, criterion, optimizer, scheduler, train_loader, val_loader, args.num_epochs, args.base, args.freeze,args.to_freeze,args.use_scheduler)
+train_accuracy, train_precision, train_recall, train_loss, test_accuracy, test_precision, test_recall, test_loss = train(model, criterion, optimizer, scheduler, train_loader, val_loader, args.num_epochs, args.base, args.freeze, args.use_scheduler)
 
 plots(train_accuracy, train_precision, train_recall, train_loss, test_accuracy, test_precision, test_recall, test_loss, idx_to_class, idx_to_site, num_classes)
 DoAna(model, test_loader, idx_to_class, idx_to_site,args.folder_name,args.csv_name)
