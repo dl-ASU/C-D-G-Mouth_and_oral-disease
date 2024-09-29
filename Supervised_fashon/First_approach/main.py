@@ -78,10 +78,8 @@ if args.transform:
 else:
     # Define the transformations based on the description provided
     transform = transforms.Compose([
-        # transforms.RandomResizedCrop(size=args.shape, scale=(0.9, 1.0)),
-        # transforms.RandomRotation(degrees=25),
-        # CustomRandomHorizontalFlip(p=0.5),
-        # CustomRandomVerticalFlip(p=0.5),
+        transforms.RandomResizedCrop(size=args.shape, scale=(0.9, 1.0)),
+        transforms.RandomRotation(degrees=10),
         transforms.RandomAffine(degrees=0, translate=(0.1, 0.1), shear=0),
         transforms.Resize((args.shape, args.shape)),
         transforms.ToTensor(),
