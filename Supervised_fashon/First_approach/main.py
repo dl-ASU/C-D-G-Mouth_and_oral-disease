@@ -7,7 +7,8 @@ from torchvision import transforms
 from transformations import CustomRandomHorizontalFlip, CustomRandomVerticalFlip
 from Dataset import CustomDataset, load_data
 from base_model import device
-from SEmodel import Model
+from MSmodel import Model
+# from SEmodel import Model
 from train import train
 
 from base_model import device
@@ -85,7 +86,7 @@ else:
         transforms.ToTensor(),
         transforms.Normalize(mean=imagenet_mean, std=imagenet_std)
     ])
-
+ 
 test_transform = transforms.Compose([
     transforms.Resize((args.shape, args.shape)),
     transforms.ToTensor(),                                      # Convert image to tensor
@@ -106,7 +107,7 @@ test_set = CustomDataset(stra_test_data, test_transform, title = "test_distribut
 train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True, num_workers = 4, pin_memory =True)
 val_loader = DataLoader(val_set, batch_size=args.batch_size, shuffle=True, num_workers = 4, pin_memory =True)
 test_loader = DataLoader(test_set, batch_size=args.batch_size, shuffle=False, num_workers = 4, pin_memory =True)
-
+print(device)
 torch.cuda.empty_cache()
 
 model = Model(num_classes=args.num_classes, num_sites=args.num_sites, base = args.base)
