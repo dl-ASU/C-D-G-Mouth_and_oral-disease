@@ -173,7 +173,7 @@ def DoAna(model, test_loader, idx_to_class, idx_to_site,folder_name,csv_name):
                 prob = F.softmax(output, dim=1)
 
                 _, pred = torch.max(output, 1)
-                preds = preds % 3
+                pred = pred % 3
 
                 if pred.item() != label.item():
                     data.loc[image_id, 'ID'] = image_id
