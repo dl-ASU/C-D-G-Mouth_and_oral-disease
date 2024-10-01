@@ -43,7 +43,7 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
             images, labels, sites = images.to(device), labels.to(device), sites.to(device)
 
             # Forward pass
-            outputs = model(images, sites)
+            outputs = model(images).logits
             loss = criterion(outputs, labels  + 3 * sites) # labels + 3 * sites
 
             # Zero the parameter gradients
@@ -85,7 +85,7 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
                 images, labels, sites = images.to(device), labels.to(device), sites.to(device)
 
                 # Forward pass
-                outputs = model(images, sites )
+                outputs = model(images).logits
                 t_loss += criterion(outputs, labels  + 3 * sites).item() # labels  + 3 * sites
 
                 # Get predictions and true labels

@@ -5,6 +5,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision import transforms
 from transformations import CustomRandomHorizontalFlip, CustomRandomVerticalFlip
+from transformers import ViTForImageClassification
 from Dataset import CustomDataset, load_data
 from base_model import device
 from MSmodel import Model
@@ -110,7 +111,9 @@ test_loader = DataLoader(test_set, batch_size=args.batch_size, shuffle=False, nu
 print(device)
 torch.cuda.empty_cache()
 
-model = Model(num_classes=args.num_classes, num_sites=args.num_sites, base = args.base)
+# model = Model(num_classes=args.num_classes, num_sites=args.num_sites, base = args.base)
+model = ViTForImageClassification.from_pretrained("google/vit-base-patch16-224-in21k", num_labels=33)
+
 model = nn.DataParallel(model).to(device)
 
 if args.optim == "AdamW":

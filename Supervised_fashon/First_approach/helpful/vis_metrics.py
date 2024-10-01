@@ -168,7 +168,7 @@ def DoAna(model, test_loader, idx_to_class, idx_to_site,folder_name,csv_name):
 
             for image, site, label in zip(images, sites, labels):
 
-                output = model(image.unsqueeze(0), site.unsqueeze(0))
+                output = model(image.unsqueeze(0)).logits
 
                 prob = F.softmax(output, dim=1)
 
@@ -191,7 +191,7 @@ def DoAna(model, test_loader, idx_to_class, idx_to_site,folder_name,csv_name):
                     torchvision.utils.save_image(image, image_path)
 
             # Forward pass
-            outputs = model(images, sites)
+            outputs = model(images).logits
 
             # Get predictions and true labels
             _, preds = torch.max(outputs, 1)
