@@ -1,4 +1,4 @@
-from base_model import ImageEncoder, device, cuda
+from .base_model import get_image_encoder
 from helpful.helpful import print_trainable_parameters
 import torch
 from torch import nn
@@ -16,11 +16,9 @@ class SiteEncoder(nn.Module):
         return x
 
 class Classifier(nn.Module):
-    def __init__(self, feature_vector, num_classes, base=None, p=0.5):
+    def __init__(self, feature_vector, num_classes, p=0.5):
         super(Classifier, self).__init__()
-        self.base = base
         self.num_classes = num_classes
-        self.softmax = nn.Softmax(dim=1)
 
         self.fc1 = nn.Linear(feature_vector + 512, 1024)
         self.fc2 = nn.Linear(1024, 128)
@@ -40,10 +38,10 @@ class Classifier(nn.Module):
 
 
 class Model(nn.Module):
-    def __init__(self, num_classes, num_sites, embedding_dim=128, base="inception", id2label=None, label2id=None):
+    def __init__(self, num_classes, num_sites, embedding_dim=128, base="inception"):
         super(Model, self).__init__()
         self.base = base
-        self.image_encoder = ImageEncoder(base, id2label=id2label, label2id=label2id)
+        self.image_encoder = get_image_encoder(base)
         print("Image-Encoder: ")
         print_trainable_parameters(self.image_encoder)
         
@@ -51,7 +49,7 @@ class Model(nn.Module):
         print("Site-Encoder: ")
         print_trainable_parameters(self.site_encoder)
 
-        self.classifier = Classifier(self.image_encoder.feature_vector, num_classes, base=base)
+        self.classifier = Classifier(self.image_encoder.feature_vector, num_classes)
         print("Classifier: ")
         print_trainable_parameters(self.classifier)
 

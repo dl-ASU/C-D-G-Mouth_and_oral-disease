@@ -3,7 +3,7 @@ import torch
 import pandas as pd
 from helpful.Analysis import allinone
 from helpful.helpful import label_site_error_analysis, label_site_all_analysis
-from base_model import device
+from models.base_model import device
 import os
 import torchvision
 import torch.nn.functional as F
@@ -150,7 +150,7 @@ def plots(train_accuracy, train_precision, train_recall, train_loss, test_accura
     plt.show()
 
 
-def DoAna(model, test_loader, idx_to_class, idx_to_site,folder_name,csv_name):
+def DoAna(model, test_loader, idx_to_class, idx_to_site, folder_name, csv_name):
     model.eval()
     test_labels = []
     test_preds = []
@@ -168,7 +168,7 @@ def DoAna(model, test_loader, idx_to_class, idx_to_site,folder_name,csv_name):
 
             for image, site, label in zip(images, sites, labels):
 
-                output = model(image.unsqueeze(0)).logits
+                output = model(image.unsqueeze(0), site.unsqueeze(0))
 
                 prob = F.softmax(output, dim=1)
 
@@ -191,7 +191,7 @@ def DoAna(model, test_loader, idx_to_class, idx_to_site,folder_name,csv_name):
                     torchvision.utils.save_image(image, image_path)
 
             # Forward pass
-            outputs = model(images).logits
+            outputs = model(images, sites)
 
             # Get predictions and true labels
             _, preds = torch.max(outputs, 1)

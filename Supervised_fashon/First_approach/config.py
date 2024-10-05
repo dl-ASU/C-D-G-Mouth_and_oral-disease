@@ -1,3 +1,5 @@
+import argparse
+
 # Hyperparameters
 num_classes = 3
 num_sites = 11
@@ -36,3 +38,43 @@ full_dataset = "/home/waleed/Documents/Medical/data_DRP/LatestDataset_processed_
 full_train_data_path = "/home/waleed/Documents/Medical/data_DRP/SplittedDataset/train"
 full_val_data_path = "/home/waleed/Documents/Medical/data_DRP/SplittedDataset/validation"
 full_test_data_path = "/home/waleed/Documents/Medical/data_DRP/SplittedDataset/test"
+
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Model training parameters")
+
+    # Add arguments for each hyperparameter
+    parser.add_argument('--num_classes', type=int, default=num_classes, help="Number of classes")
+    parser.add_argument('--num_sites', type=int, default=num_sites, help="Number of sites")
+    parser.add_argument('--embedding_dim', type=int, default=embedding_dim, help="Embedding dimension")
+    parser.add_argument('--learning_rate', type=float, default=learning_rate, help="Learning rate")
+    parser.add_argument('--shape', type=int, default=299, help="Shape of the image")
+    parser.add_argument('--dropout', type=float, default=dropout, help="Dropout probability")
+
+    parser.add_argument('--folder_name', type=str, default='MisClassified_Images', help="Folder name of the testing images")
+    parser.add_argument('--csv_name', type=str, default='MisClassified_Images', help="Csv output of the images")
+
+    parser.add_argument('--num_epochs', type=int, default=num_epochs, help="Number of epochs")
+    parser.add_argument('--l2', type=float, default=l2, help="L2 regularization")
+    parser.add_argument('--batch_size', type=int, default=batch_size, help="Batch size")
+    parser.add_argument('--gamma', type=float, default=gamma, help="Gamma")
+    parser.add_argument('--optim', type=str, default="AdamW", help="Optimizer")
+    parser.add_argument('--arch', type=str, default="SE", help="Architecture")
+
+    parser.add_argument('--full_train_data_path', type=str, default=full_train_data_path, help="Full train data path")
+    parser.add_argument('--full_val_data_path', type=str, default=full_val_data_path, help="Full validation data path")
+    parser.add_argument('--full_test_data_path', type=str, default=full_test_data_path, help="Full test data path")
+    parser.add_argument('--base', type=str, default="resnet50", help="Base model")
+
+    # Boolean flags
+    parser.add_argument('--use_scheduler', action='store_true', help="Use scheduler")
+    parser.add_argument('--freeze_base', action='store_true', help="Freeze Base True")
+    parser.add_argument('--freeze', action='store_true', help="Freeze True")
+
+    parser.add_argument('--ignore', action='store_true', help="Disable symmetries (default: True, use --ignore to set False)")
+    parser.add_argument('--oversample', action='store_true', help="Disable oversampling")
+    parser.add_argument('--save_augmented', action='store_true', help="Save augmented data")
+    parser.add_argument('--transform', action='store_true', help="More Transformations")
+
+    return parser.parse_args()

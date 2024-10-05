@@ -3,7 +3,7 @@ import numpy as np
 
 from helpful.helpful import print_trainable_parameters, setTrainable, FreezeFirstN
 from config import dic, epochs_sch
-from base_model import device
+from models.base_model import device
 import warnings
 warnings.filterwarnings("ignore")
 from tqdm import tqdm
@@ -43,7 +43,7 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
             images, labels, sites = images.to(device), labels.to(device), sites.to(device)
 
             # Forward pass
-            outputs = model(images).logits
+            outputs = model(images, sites)
             loss = criterion(outputs, labels  + 3 * sites) # labels + 3 * sites
 
             # Zero the parameter gradients
@@ -85,7 +85,7 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
                 images, labels, sites = images.to(device), labels.to(device), sites.to(device)
 
                 # Forward pass
-                outputs = model(images).logits
+                outputs = model(images, sites)
                 t_loss += criterion(outputs, labels  + 3 * sites).item() # labels  + 3 * sites
 
                 # Get predictions and true labels
@@ -107,7 +107,8 @@ def train(model, criterion, optimizer, scheduler, train_loader, test_loader, num
         test_recall.append(Tepoch_recall.tolist())
         test_loss.append(t_loss)
 
-        # torch.save(model.state_dict(), f"model_{base}_epoch_{epoch}.pth") # /home/waleed/Documents/Medical/results/
+        if epoch%5==0 and epoch !=  0:
+            torch.save(model.state_dict(), f"model_{base}_epoch_{epoch}.pth")
 
         print(f'Epoch [{epoch + 1}/{num_epochs}], Loss: {cum_loss:.4f}, Accuracy: {epoch_accuracy:.4f}, Precision: {np.mean(epoch_precision):.4f}, Recall: {np.mean(epoch_recall):.4f}')
         print(f'Epoch [{epoch + 1}/{num_epochs}], Loss: {t_loss:.4f}, Accuracy: {Tepoch_accuracy:.4f}, Precision: {np.mean(Tepoch_precision):.4f}, Recall: {np.mean(Tepoch_recall):.4f}')
