@@ -66,7 +66,6 @@ train_loader = DataLoader(train_set, batch_size=args.batch_size, shuffle=True, n
 val_loader = DataLoader(val_set, batch_size=args.batch_size, shuffle=True, num_workers = 4, pin_memory =True)
 test_loader = DataLoader(test_set, batch_size=args.batch_size, shuffle=False, num_workers = 4, pin_memory =True)
 
-print(device)
 torch.cuda.empty_cache()
 
 print(args.arch, args.base)
@@ -74,8 +73,7 @@ print(args.arch, args.base)
 model = get_arch(mode = args.arch, num_classes=args.num_classes, num_sites=args.num_sites, base = args.base)
 model = nn.DataParallel(model).to(device)
 
-train = get_train(args.arch, model, train_loader, test_loader, args) 
-train_accuracy, train_precision, train_recall, train_loss, test_accuracy, test_precision, test_recall, test_loss = train(model, train_loader, val_loader, args)
+train_accuracy, train_precision, train_recall, train_loss, test_accuracy, test_precision, test_recall, test_loss = get_train(args.arch, model, train_loader, test_loader, args) 
 
 plots(train_accuracy, train_precision, train_recall, train_loss, test_accuracy, test_precision, test_recall, test_loss, idx_to_class, idx_to_site, num_classes)
 DoAna(model, test_loader, idx_to_class, idx_to_site, args.folder_name, args.csv_name)
