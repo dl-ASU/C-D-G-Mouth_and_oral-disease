@@ -6,7 +6,7 @@ from .enstrain import train as enstrain
 TRAIN_FACTORY = {
     "mask": mstrain,
     "site": setrain,
-    "ensemble": enstrain,
+    "ensembel": enstrain,
 }
 
 def get_train(mode, *args, **kwargs):

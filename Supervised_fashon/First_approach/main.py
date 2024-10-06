@@ -72,20 +72,8 @@ torch.cuda.empty_cache()
 model = get_arch(mode = args.arch, num_classes=args.num_classes, num_sites=args.num_sites, base = args.base)
 model = nn.DataParallel(model).to(device)
 
-if args.optim == "AdamW":
-    optimizer = optim.AdamW(model.parameters(), lr=args.learning_rate, weight_decay=args.l2)
-elif args.optim=='RMSprop':
-    optimizer = optim.RMSprop(model.parameters(), lr=args.learning_rate,weight_decay=args.l2)
-elif args.optim=='Adagrad':
-    optimizer = optim.Adagrad(model.parameters(), lr=args.learning_rate,weight_decay=args.l2)
-else:
-    optimizer = optim.Adam(model.parameters(), lr=args.learning_rate , weight_decay=args.l2)
-
-scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones = sche_milestones, gamma = args.gamma)
-criterion = nn.CrossEntropyLoss()
-
-train = get_train(args.arch, model, criterion, optimizer, scheduler, train_loader, test_loader, args.num_epochs)
-train_accuracy, train_precision, train_recall, train_loss, test_accuracy, test_precision, test_recall, test_loss = train(model, criterion, optimizer, scheduler, train_loader, val_loader, args.num_epochs, args.base, args.freeze, args.use_scheduler)
+train = get_train(args.arch, model, train_loader, test_loader, args) 
+train_accuracy, train_precision, train_recall, train_loss, test_accuracy, test_precision, test_recall, test_loss = train(model, train_loader, val_loader, args)
 
 plots(train_accuracy, train_precision, train_recall, train_loss, test_accuracy, test_precision, test_recall, test_loss, idx_to_class, idx_to_site, num_classes)
-DoAna(model, test_loader, idx_to_class, idx_to_site,args.folder_name,args.csv_name)
+DoAna(model, test_loader, idx_to_class, idx_to_site, args.folder_name, args.csv_name)
