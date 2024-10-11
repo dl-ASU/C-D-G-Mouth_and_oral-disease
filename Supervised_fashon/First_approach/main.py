@@ -48,7 +48,7 @@ test_transform = transforms.Compose([
     transforms.Resize((args.shape, args.shape)),
     transforms.ToTensor(),                                      # Convert image to tensor
     # transforms.RandomApply([transforms.Lambda(lambda x: x + (0.05 * torch.randn_like(x)))], p=0.5), # Channel shift
-    transforms.Normalize(mean=imagenet_mean, std=imagenet_mean)
+    transforms.Normalize(mean=imagenet_mean, std=imagenet_std)
 ])
 
 stra_train_data, idx_to_class, idx_to_site = load_data(args.full_train_data_path, args.ignore)
