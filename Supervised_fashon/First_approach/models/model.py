@@ -8,7 +8,7 @@ Arch_FACTORY = {
     "site": semodel,
     "ensembel": ModelEnsembleInd,
 }
-
+ 
 def get_arch(mode, *args, **kwargs):
     """Fetch the appropriate PointNet model based on the mode."""
     if mode not in Arch_FACTORY:

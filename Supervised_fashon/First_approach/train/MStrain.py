@@ -16,7 +16,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score
 
 def train(model, train_loader, test_loader, args):
 
-    optimizer = optim.Adam(model.parameters(), lr=args.learning_rate , weight_decay=args.l2)
+    optimizer = optim.Adam(model.parameters(), lr=args.learning_rate)
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones = sche_milestones, gamma = args.gamma)
     criterion = nn.CrossEntropyLoss()
 
@@ -30,6 +30,7 @@ def train(model, train_loader, test_loader, args):
     test_precision = []
     test_recall = []
     test_loss = []
+
     if args.freeze:
         FreezeFirstN(model, 10000)
     print_trainable_parameters(model)
@@ -68,8 +69,7 @@ def train(model, train_loader, test_loader, args):
             all_preds.extend(preds.cpu().numpy())
             cum_loss += loss.item()
 
-        if args.use_scheduler:
-            scheduler.step()
+        scheduler.step()
 
         # Calculate metrics
         epoch_accuracy = accuracy_score(all_labels, all_preds)

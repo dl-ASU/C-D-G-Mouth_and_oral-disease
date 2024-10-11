@@ -36,7 +36,6 @@ class Classifier(nn.Module):
         x = self.fc3(x)
         return x
 
-
 class Model(nn.Module):
     def __init__(self, num_classes, num_sites, embedding_dim=128, base="inception"):
         super(Model, self).__init__()

@@ -25,7 +25,7 @@ if args.transform:
     transform = transforms.Compose([
         transforms.RandomResizedCrop(size=args.shape, scale=(0.8, 1.0)),   # Randomly zoom in/out
         transforms.RandomRotation(degrees=35),                      # Rotate by 25 degrees
-        CustomRandomHorizontalFlip(p=0.5),                          # Flip horizontally with a 50% chance
+        # CustomRandomHorizontalFlip(p=0.5),                          # Flip horizontally with a 50% chance
         # CustomRandomVerticalFlip(p=0.5),                            # Flip vertically with a 50% chance
         transforms.RandomAffine(degrees=10, translate=(0.15, 0.15), shear=0.2),  # Width & height shift, and shear
         transforms.ColorJitter(brightness=(0.5, 1.0)),              # Brightness adjustment (0.5 to 1.0)
@@ -50,7 +50,7 @@ test_transform = transforms.Compose([
     # transforms.RandomApply([transforms.Lambda(lambda x: x + (0.05 * torch.randn_like(x)))], p=0.5), # Channel shift
     transforms.Normalize(mean=imagenet_mean, std=imagenet_mean)
 ])
- 
+
 stra_train_data, idx_to_class, idx_to_site = load_data(args.full_train_data_path, args.ignore)
 stra_test_data, _, _ = load_data(args.full_test_data_path, args.ignore)
 stra_val_data, _, _ = load_data(args.full_val_data_path, args.ignore)
