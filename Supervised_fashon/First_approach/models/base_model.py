@@ -59,9 +59,14 @@ class EffNetb0Encoder(ImageEncoderBase):
         self.inc_base = nn.Sequential(*list(model.children())[:-1])
         self.feature_vector = 1280
         self.set_dropout(self.inc_base, p=dropout)
+        self.pooling = nn.AdaptiveAvgPool2d((1, 1))
 
     def forward(self, x):
-        return self.inc_base(x)
+        feature = self.inc_base(x)
+        if len(feature.shape) > 2:
+            feature = self.pooling(feature)
+            feature = feature.squeeze(3).squeeze(2)
+        return feature
 
 class EffNetB4Encoder(ImageEncoderBase):
     def __init__(self, dropout=0.1):

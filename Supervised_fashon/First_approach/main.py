@@ -54,7 +54,7 @@ test_transform = transforms.Compose([
 stra_train_data, idx_to_class, idx_to_site = load_data(args.full_train_data_path, args.ignore)
 stra_test_data, _, _ = load_data(args.full_test_data_path, args.ignore)
 stra_val_data, _, _ = load_data(args.full_val_data_path, args.ignore)
-
+print(args)
 print(idx_to_site)
 print(idx_to_class)
 

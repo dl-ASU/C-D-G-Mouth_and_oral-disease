@@ -68,7 +68,6 @@ class Model(nn.Module):
 
         # Pass site information through the site encoder
         site_encoded = self.site_encoder(site)
-
         # Concatenate image and site embeddings
         combined = torch.cat((img_encoded, site_encoded), dim=1)
 
