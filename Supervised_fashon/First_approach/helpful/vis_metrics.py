@@ -3,7 +3,7 @@ import torch
 import pandas as pd
 from helpful.Analysis import allinone
 from helpful.helpful import label_site_error_analysis, label_site_all_analysis
-from base_model import device
+from models.base_model import device
 import os
 import torchvision
 import torch.nn.functional as F
@@ -150,36 +150,36 @@ def plots(train_accuracy, train_precision, train_recall, train_loss, test_accura
     plt.show()
 
 
-def DoAna(model, test_loader, idx_to_class, idx_to_site,folder_name,csv_name):
+def DoAna(model, test_loader, idx_to_class, idx_to_site, folder_name, csv_name):
     model.eval()
     test_labels = []
     test_preds = []
     t_sites = []
-    
+
     data = pd.DataFrame(columns=['ID','Site','Class label','Predicted label','Low','Normal','High'])
     image_id = 0
 
     # Create an empty folder
     os.makedirs(folder_name , exist_ok=True)
-    
+
     with torch.no_grad():
         for images, labels, sites in test_loader:
             images, labels, sites = images.to(device), labels.to(device), sites.to(device)
-            
+
             for image, site, label in zip(images, sites, labels):
-                
+
                 output = model(image.unsqueeze(0), site.unsqueeze(0))
-                
+
                 prob = F.softmax(output, dim=1)
-                
+
                 _, pred = torch.max(output, 1)
-                
-                
+                pred = pred % 3
+
                 if pred.item() != label.item():
                     data.loc[image_id, 'ID'] = image_id
                     data.loc[image_id, 'Site'] = idx_to_site[site.item()]
                     data.loc[image_id, 'Class label'] = idx_to_class[label.item()]
-                    
+
                     data.loc[image_id, 'Predicted label'] = idx_to_class[pred.item()]
                     data.loc[image_id, 'Normal'] = prob[0][1].item()
                     data.loc[image_id, 'Low'] = prob[0][0].item()
@@ -189,21 +189,20 @@ def DoAna(model, test_loader, idx_to_class, idx_to_site,folder_name,csv_name):
                     # Save the image in the folder
                     image_path = os.path.join(folder_name, f'image_{image_id}.png')
                     torchvision.utils.save_image(image, image_path)
-                
 
             # Forward pass
             outputs = model(images, sites)
 
             # Get predictions and true labels
             _, preds = torch.max(outputs, 1)
-            preds = torch.div(preds, 11, rounding_mode="floor")
+            preds = preds % 3
 
             test_labels.extend(labels.cpu().numpy())
             test_preds.extend(preds.cpu().numpy())
             t_sites.extend(sites.cpu().numpy())
-            
+
     data.to_csv(f'{csv_name}.csv', index=False)
-    
+
     error_analysis = label_site_error_analysis(test_labels, test_preds, t_sites)
     data_analysis = label_site_all_analysis(test_labels, test_preds, t_sites)
 

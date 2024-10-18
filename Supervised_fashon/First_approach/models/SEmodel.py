@@ -1,4 +1,4 @@
-from base_model import ImageEncoder, device, cuda
+from .base_model import get_image_encoder
 from helpful.helpful import print_trainable_parameters
 import torch
 from torch import nn
@@ -16,26 +16,11 @@ class SiteEncoder(nn.Module):
         return x
 
 class Classifier(nn.Module):
-    def __init__(self, num_classes, base=None, p=0.5):
+    def __init__(self, feature_vector, num_classes, p=0.5):
         super(Classifier, self).__init__()
-        self.base = base
         self.num_classes = num_classes
-        self.softmax = nn.Softmax(dim=1)
 
-        # Adjust input size of the first FC layer based on the image encoder backbone
-        if self.base == 'inception':
-            self.fc1 = nn.Linear(1536 + 512, 1024)
-        elif self.base == 'ViT':
-            self.fc1 = nn.Linear(768 + 512, 1024)
-        elif self.base in {'resnet50', 'ser'}:
-            self.fc1 = nn.Linear(2048 + 512, 1024)
-        elif self.base == {"google", "effnet_b4"}:
-            self.fc1 = nn.Linear(1792 + 512, 1024)
-        elif self.base == "convnext":
-            self.fc1 = nn.Linear(1024 + 512, 1024)
-        else:
-            self.fc1 = nn.Linear(1024 + 512, 1024)  # Adjust if using custom architecture
-
+        self.fc1 = nn.Linear(feature_vector + 512, 1024)
         self.fc2 = nn.Linear(1024, 128)
         self.fc3 = nn.Linear(128, num_classes)
 
@@ -51,12 +36,11 @@ class Classifier(nn.Module):
         x = self.fc3(x)
         return x
 
-
 class Model(nn.Module):
-    def __init__(self, num_classes, num_sites, embedding_dim=128, base="inception", id2label=None, label2id=None):
+    def __init__(self, num_classes, num_sites, embedding_dim=128, base="inception"):
         super(Model, self).__init__()
         self.base = base
-        self.image_encoder = ImageEncoder(base, id2label=id2label, label2id=label2id)
+        self.image_encoder = get_image_encoder(base)
         print("Image-Encoder: ")
         print_trainable_parameters(self.image_encoder)
         
@@ -64,7 +48,7 @@ class Model(nn.Module):
         print("Site-Encoder: ")
         print_trainable_parameters(self.site_encoder)
 
-        self.classifier = Classifier(num_classes, base=base)
+        self.classifier = Classifier(self.image_encoder.feature_vector, num_classes)
         print("Classifier: ")
         print_trainable_parameters(self.classifier)
 
@@ -84,7 +68,6 @@ class Model(nn.Module):
 
         # Pass site information through the site encoder
         site_encoded = self.site_encoder(site)
-
         # Concatenate image and site embeddings
         combined = torch.cat((img_encoded, site_encoded), dim=1)
 

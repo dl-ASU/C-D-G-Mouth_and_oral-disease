@@ -1,25 +1,15 @@
-from base_model import ImageEncoder, device, cuda
+from .base_model import get_image_encoder
 import torch
 from torch import nn
 
 class Classifier(nn.Module):
-    def __init__(self, num_classes, num_sites, base=None, p=0.5):
+    def __init__(self, feature_vector, num_classes, num_sites, p=0.5):
         super(Classifier, self).__init__()
-        self.base = base
         self.num_sites = num_sites
         self.num_classes = num_classes
         self.softmax = nn.Softmax(dim=1)
 
-        if self.base == 'inception':
-            self.fc1 = nn.Linear(1536, 1024)
-        elif self.base == 'ViT':
-            self.fc1 = nn.Linear(768, 1024)
-        elif self.base == 'resnet50':
-            self.fc1 = nn.Linear(2048, 1024)
-        elif self.base == "google" or self.base == "effnet_b4":
-            self.fc1 = nn.Linear(1792, 1024)
-        else:
-            self.fc1 = nn.Linear(512, 1024)
+        self.fc1 = nn.Linear(feature_vector, 1024)
 
         self.fc2 = nn.Linear(1024, 128)
         self.fc3 = nn.Linear(128, num_classes * num_sites)
@@ -51,8 +41,8 @@ class Model(nn.Module):
     def __init__(self, num_classes, num_sites, base = "inception", id2label = None, label2id = None):
         super(Model, self).__init__()
         self.base = base
-        self.image_encoder = ImageEncoder(base, id2label = id2label, label2id = label2id)
-        self.classifier = Classifier(num_classes, num_sites, base = base)
+        self.image_encoder = get_image_encoder(base)
+        self.classifier = Classifier(self.image_encoder.feature_vector, num_classes, num_sites)
         self.max = nn.MaxPool1d(196)
 
     def forward(self, img, site):
