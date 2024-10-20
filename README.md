@@ -11,6 +11,6 @@
    ![Second Approach Architecture](images/approach2.png)  
 
 2. **Third Approach:**  
-   ![Third Approach Architecture](images/approach2.png)  
+   ![Third Approach Architecture](images/approach3.png)  
 
 ---
