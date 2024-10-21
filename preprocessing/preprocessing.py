@@ -6,7 +6,7 @@ import argparse
 from pathlib import Path
 
 # extract image from base64 and save label in YOLO format
-def process_json_file(json_file_path, image_dir, label_dir, is_train=True):
+def process_json_file(json_file_path, image_dir, label_dir, area_subdir, is_train=True):
     with open(json_file_path, 'r') as f:
         data = json.load(f)
     
@@ -16,13 +16,21 @@ def process_json_file(json_file_path, image_dir, label_dir, is_train=True):
     if image_data:
         image_bytes = base64.b64decode(image_data)
         subdir = 'train' if is_train else 'test'
-        image_path = os.path.join(image_dir, subdir, image_filename)
+        
+        # create area subdirectory in the target directory
+        target_image_area_dir = os.path.join(image_dir, subdir, area_subdir)
+        Path(target_image_area_dir).mkdir(parents=True, exist_ok=True)
+        
+        image_path = os.path.join(target_image_area_dir, image_filename)
         with open(image_path, 'wb') as img_file:
             img_file.write(image_bytes)
     
     # process corresponding label
     label_filename = f"{Path(image_filename).stem}.txt"
-    label_path = os.path.join(label_dir, subdir, label_filename)
+    target_label_area_dir = os.path.join(label_dir, subdir, area_subdir)
+    Path(target_label_area_dir).mkdir(parents=True, exist_ok=True)
+    
+    label_path = os.path.join(target_label_area_dir, label_filename)
     
     with open(label_path, 'w') as label_file:
         for shape in data['shapes']:
@@ -60,7 +68,12 @@ def process_dataset(source_dirs, target_image_dir, target_label_dir, split_ratio
                 for i, json_file in enumerate(json_files):
                     json_file_path = os.path.join(site_path, json_file)
                     is_train = i < train_split_index
-                    process_json_file(json_file_path, target_image_dir, target_label_dir, is_train)
+                    
+                    # extract area subdirectory name
+                    area_subdir = os.path.basename(site_path)
+                    
+                    # process the json file with the area subdir included in the target path
+                    process_json_file(json_file_path, target_image_dir, target_label_dir, area_subdir, is_train)
 
 # setting up argument parsing
 def parse_args():
