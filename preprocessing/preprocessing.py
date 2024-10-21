@@ -64,6 +64,10 @@ def process_dataset(source_dirs, target_image_dir, target_label_dir, split_ratio
                 random.shuffle(json_files)
                 train_split_index = int(len(json_files) * split_ratio)
                 
+                # count total JSON files
+                total_json_files = len(json_files)
+                print(f"Processing area '{os.path.basename(site_path)}' with {total_json_files} JSON files")
+                
                 # process each json file
                 for i, json_file in enumerate(json_files):
                     json_file_path = os.path.join(site_path, json_file)
@@ -74,6 +78,19 @@ def process_dataset(source_dirs, target_image_dir, target_label_dir, split_ratio
                     
                     # process the json file with the area subdir included in the target path
                     process_json_file(json_file_path, target_image_dir, target_label_dir, area_subdir, is_train)
+                
+                # count generated images and labels in train/test directories for the current area
+                for subdir in ['train', 'test']:
+                    target_image_area_dir = os.path.join(target_image_dir, subdir, area_subdir)
+                    target_label_area_dir = os.path.join(target_label_dir, subdir, area_subdir)
+                    
+                    # count files in the target image and label directories
+                    num_images = len([f for f in os.listdir(target_image_area_dir) if os.path.isfile(os.path.join(target_image_area_dir, f))])
+                    num_labels = len([f for f in os.listdir(target_label_area_dir) if os.path.isfile(os.path.join(target_label_area_dir, f))])
+                    
+                    print(f"  {subdir} set - Images in '{area_subdir}': {num_images}, Labels: {num_labels}")
+                
+                print(f"Finished processing area '{area_subdir}'\n")
 
 # setting up argument parsing
 def parse_args():
