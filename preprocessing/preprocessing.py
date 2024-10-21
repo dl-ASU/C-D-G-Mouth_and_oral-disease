@@ -2,18 +2,8 @@ import os
 import json
 import base64
 import random
+import argparse
 from pathlib import Path
-
-source_dirs = ['low', 'high']
-target_image_dir = 'dataset/images'
-target_label_dir = 'dataset/labels'
-
-# train|test split ratio
-split_ratio = 0.8
-
-for subdir in ['train', 'test']:
-    Path(os.path.join(target_image_dir, subdir)).mkdir(parents=True, exist_ok=True)
-    Path(os.path.join(target_label_dir, subdir)).mkdir(parents=True, exist_ok=True)
 
 # extract image from base64 and save label
 def process_json_file(json_file_path, image_dir, label_dir, is_train=True):
@@ -48,26 +38,34 @@ def process_json_file(json_file_path, image_dir, label_dir, is_train=True):
             
             label_file.write(f"{class_id} {x_center} {y_center} {width} {height}\n")
 
-def main(single_json_file=None):
-    if single_json_file:
-        print(f"Processing single JSON file: {single_json_file}")
-        process_json_file(single_json_file, target_image_dir, target_label_dir, is_train=True)
-    else:
-        # iterate through the dataset directories
-        for source_dir in source_dirs:
-            for site in os.listdir(source_dir):
-                site_path = os.path.join(source_dir, site)
-                if os.path.isdir(site_path):
-                    json_files = [f for f in os.listdir(site_path) if f.endswith('.json')]
-                    random.shuffle(json_files)
-                    train_split_index = int(len(json_files) * split_ratio)
-                    
-                    for i, json_file in enumerate(json_files):
-                        json_file_path = os.path.join(site_path, json_file)
-                        is_train = i < train_split_index
-                        process_json_file(json_file_path, target_image_dir, target_label_dir, is_train)
+# iterate through dataset directories and process files
+def process_dataset(source_dirs, split_ratio):
+    for source_dir in source_dirs:
+        for site in os.listdir(source_dir):
+            site_path = os.path.join(source_dir, site)
+            if os.path.isdir(site_path):
+                json_files = [f for f in os.listdir(site_path) if f.endswith('.json')]
+                random.shuffle(json_files)
+                train_split_index = int(len(json_files) * split_ratio)
+                
+                # process each json file
+                for i, json_file in enumerate(json_files):
+                    json_file_path = os.path.join(site_path, json_file)
+                    is_train = i < train_split_index
+                    process_json_file(json_file_path, target_image_dir, target_label_dir, is_train)
 
-    print("Dataset preprocessing completed.")
+# set up argument parsing
+def parse_args():
+    parser = argparse.ArgumentParser(description='Process dataset and split into train/test.')
+    parser.add_argument('--source_dirs', nargs='+', required=True, help='Full paths to source directories.')
+    parser.add_argument('--target_image_dir', required=True, help='Full path to target image directory.')
+    parser.add_argument('--target_label_dir', required=True, help='Full path to target label directory.')
+    parser.add_argument('--split_ratio', type=float, default=0.8, help='Train/test split ratio.')
+    return parser.parse_args()
 
-single_json_file = 'IMG_20190525_123527.json'
-main(single_json_file)
+if __name__ == '__main__':
+    # parse command line arguments
+    args = parse_args()
+    
+    # process the dataset
+    process_dataset(args.source_dirs, args.target_image_dir, args.target_label_dir, args.split_ratio)
