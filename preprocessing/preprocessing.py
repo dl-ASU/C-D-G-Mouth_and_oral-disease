@@ -5,11 +5,12 @@ import random
 import argparse
 from pathlib import Path
 
-# extract image from base64 and save label
+# extract image from base64 and save label in YOLO format
 def process_json_file(json_file_path, image_dir, label_dir, is_train=True):
     with open(json_file_path, 'r') as f:
         data = json.load(f)
     
+    # process image data
     image_data = data.get('imageData')
     image_filename = data.get('imagePath')
     if image_data:
@@ -19,18 +20,19 @@ def process_json_file(json_file_path, image_dir, label_dir, is_train=True):
         with open(image_path, 'wb') as img_file:
             img_file.write(image_bytes)
     
-    # corresponding label in YOLO format
+    # process corresponding label
     label_filename = f"{Path(image_filename).stem}.txt"
     label_path = os.path.join(label_dir, subdir, label_filename)
     
     with open(label_path, 'w') as label_file:
         for shape in data['shapes']:
+            # assign class_id based on the source directory
             class_id = 0 if 'low' in json_file_path else 1
             points = shape['points']
             x_min, y_min = points[0]
             x_max, y_max = points[1]
             
-            # YOLO format: x_center, y_center, width, height
+            # convert to YOLO format: x_center, y_center, width, height
             x_center = (x_min + x_max) / 2 / data['imageWidth']
             y_center = (y_min + y_max) / 2 / data['imageHeight']
             width = (x_max - x_min) / data['imageWidth']
@@ -39,7 +41,13 @@ def process_json_file(json_file_path, image_dir, label_dir, is_train=True):
             label_file.write(f"{class_id} {x_center} {y_center} {width} {height}\n")
 
 # iterate through dataset directories and process files
-def process_dataset(source_dirs, split_ratio):
+def process_dataset(source_dirs, target_image_dir, target_label_dir, split_ratio):
+    # ensure the directories for train and test splits exist
+    for subdir in ['train', 'test']:
+        Path(os.path.join(target_image_dir, subdir)).mkdir(parents=True, exist_ok=True)
+        Path(os.path.join(target_label_dir, subdir)).mkdir(parents=True, exist_ok=True)
+    
+    # process dataset
     for source_dir in source_dirs:
         for site in os.listdir(source_dir):
             site_path = os.path.join(source_dir, site)
@@ -54,7 +62,7 @@ def process_dataset(source_dirs, split_ratio):
                     is_train = i < train_split_index
                     process_json_file(json_file_path, target_image_dir, target_label_dir, is_train)
 
-# set up argument parsing
+# setting up argument parsing
 def parse_args():
     parser = argparse.ArgumentParser(description='Process dataset and split into train/test.')
     parser.add_argument('--source_dirs', nargs='+', required=True, help='Full paths to source directories.')
@@ -66,6 +74,5 @@ def parse_args():
 if __name__ == '__main__':
     # parse command line arguments
     args = parse_args()
-    
-    # process the dataset
     process_dataset(args.source_dirs, args.target_image_dir, args.target_label_dir, args.split_ratio)
+
