@@ -38,9 +38,13 @@ def process_json_file(json_file_path, image_dir, label_dir, area_subdir, is_trai
             # assign class_id based on the source directory
             class_id = 0 # if 'low' in json_file_path else 1
             points = shape['points']
-            x_min, y_min = points[0]
-            x_max, y_max = points[1]
-            
+            x_1, y_1 = points[0]
+            x_2, y_2 = points[1]
+            x_min = min(x_1, x_2)
+            x_max = max(x_1, x_2)
+            y_min = min(y_1, y_2)
+            y_max = max(y_1, y_2)
+
             # convert to YOLO format: x_center, y_center, width, height
             x_center = (x_min + x_max) / 2 / data['imageWidth']
             y_center = (y_min + y_max) / 2 / data['imageHeight']

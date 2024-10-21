@@ -1,8 +1,8 @@
-from .SEmodel import Model as semodel
+from .SEmodel import Model
 
 # Mode Factory that maps modes to classes
 Arch_FACTORY = {
-    "none": semodel,
+    "final_classifier": Model,
 }
 
 def get_arch(mode, *args, **kwargs):
