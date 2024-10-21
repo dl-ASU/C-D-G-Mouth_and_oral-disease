@@ -18,11 +18,6 @@ our_std = [0.2904, 0.2886, 0.2886]
 imagenet_mean=[0.485, 0.456, 0.406]
 imagenet_std=[0.229, 0.224, 0.225]
 
-
-epochs_sch = {0:0, 9:1, 14:2, 19:3, 24:4, 29:5}
-test_size = 0.15
-val_size = 0.15
-
 def parse_args():
     parser = argparse.ArgumentParser(description="Model training parameters")
 

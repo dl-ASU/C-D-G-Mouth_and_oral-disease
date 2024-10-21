@@ -62,8 +62,6 @@ test_loader = DataLoader(test_set, batch_size=args.batch_size, shuffle=False, nu
 
 torch.cuda.empty_cache()
 
-print(args.arch, args.base)
-
 model = get_arch(mode = args.arch, num_classes=args.num_classes, num_sites=args.num_sites, base = args.base)
 model = nn.DataParallel(model).to(device)
 
