@@ -4,6 +4,7 @@ import base64
 import random
 import argparse
 from pathlib import Path
+import yaml
 
 # extract image from base64 and save label in YOLO format
 def process_json_file(json_file_path, image_dir, label_dir, area_subdir, is_train=True):
@@ -35,7 +36,7 @@ def process_json_file(json_file_path, image_dir, label_dir, area_subdir, is_trai
     with open(label_path, 'w') as label_file:
         for shape in data['shapes']:
             # assign class_id based on the source directory
-            class_id = 0 if 'low' in json_file_path else 1
+            class_id = 0 # if 'low' in json_file_path else 1
             points = shape['points']
             x_min, y_min = points[0]
             x_max, y_max = points[1]
@@ -92,6 +93,21 @@ def process_dataset(source_dirs, target_image_dir, target_label_dir, split_ratio
                 
                 print(f"Finished processing area '{area_subdir}'\n")
 
+# Function to generate the YAML file for YOLO training
+def generate_yaml_file(target_image_dir, target_label_dir, num_classes, class_names, output_yaml_path):
+    yaml_data = {
+        'train': os.path.join(target_image_dir, 'train'),
+        'val': os.path.join(target_image_dir, 'test'),  # Assuming test set is used for validation
+        'nc': num_classes,
+        'names': class_names
+    }
+
+    # Save the YAML file
+    with open(output_yaml_path, 'w') as yaml_file:
+        yaml.dump(yaml_data, yaml_file, default_flow_style=False)
+    
+    print(f"YAML file saved at: {output_yaml_path}")
+
 # setting up argument parsing
 def parse_args():
     parser = argparse.ArgumentParser(description='Process dataset and split into train/test.')
@@ -106,3 +122,10 @@ if __name__ == '__main__':
     args = parse_args()
     process_dataset(args.source_dirs, args.target_image_dir, args.target_label_dir, args.split_ratio)
 
+    # specify class details
+    num_classes = 1
+    class_names = ['disease']
+
+    # Generate the dataset YAML file
+    output_yaml_path = os.path.join(args.target_image_dir, 'dataset.yaml')
+    generate_yaml_file(args.target_image_dir, args.target_label_dir, num_classes, class_names, output_yaml_path)

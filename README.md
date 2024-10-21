@@ -12,5 +12,3 @@
 
 2. **Third Approach:**  
    ![Third Approach Architecture](images/approach3.png)  
-
----
